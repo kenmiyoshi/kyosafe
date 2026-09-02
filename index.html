@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KyoSafe — ABC</title>
+  <style>
+    :root { --bg:#f3eee4; --ink:#161513; --muted:#5c574e; --card:#fffcf6; --green:#1b7f3a; --yellow:#b78100; --red:#b42318; --gray:#6b665e; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+    header { padding: 16px 16px 8px; max-width: 820px; margin: 0 auto; }
+    h1 { font-size: 1.2rem; margin: 0; }
+    .sub { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+    nav { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 12px; position: sticky; top: 0; background: var(--bg); z-index: 2; max-width: 820px; margin: 0 auto; }
+    nav button { border: 0; background: #e7e0d2; border-radius: 999px; padding: 8px 12px; font: inherit; cursor: pointer; }
+    nav button.on { background: #161513; color: #fff; }
+    main { padding: 0 16px 48px; max-width: 820px; margin: 0 auto; }
+    input, select, textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #cfc6b6; font-size: 16px; font-family: inherit; }
+    textarea { min-height: 160px; }
+    .hit, .card { margin: 12px 0; padding: 14px; background: var(--card); border-radius: 12px; }
+    .green { box-shadow: inset 6px 0 0 var(--green); }
+    .yellow { box-shadow: inset 6px 0 0 var(--yellow); }
+    .off { box-shadow: inset 6px 0 0 var(--red); }
+    .pending { box-shadow: inset 6px 0 0 var(--gray); }
+    .unknown { box-shadow: inset 6px 0 0 #888; }
+    .badge { font-size: 11px; font-weight: 700; letter-spacing: .04em; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee4d4; vertical-align: top; }
+    th { background: #e8dfcf; }
+    code { font-size: 12px; }
+    .warn { background: #f8e8e6; padding: 10px 12px; border-radius: 10px; font-size: 0.9rem; }
+    section[hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>KyoSafe</h1>
+    <div class="sub">If the barcode is not on this list, put it back. Oyster and scallop are OK. Avoid peanut, tree nuts, sesame, and shellfish (squid, octopus, clam, abalone).</div>
+  </header>
+  <nav>
+    <button type="button" class="on" data-p="scan">Scan</button>
+    <button type="button" data-p="card">Card</button>
+    <button type="button" data-p="stores">Stores</button>
+    <button type="button" data-p="makers">Makers</button>
+    <button type="button" data-p="confirm">Confirm</button>
+  </nav>
+  <main>
+    <section id="scan">
+      <input id="jan" type="search" inputmode="numeric" placeholder="Type the number under the barcode" />
+      <div id="out"></div>
+      <p class="sub">Green = ingredients and facility are clear. Yellow = does not contain your allergens, but there is no full may-contain / shared-facility statement. Red or gray = do not eat.</p>
+    </section>
+    <section id="card" hidden></section>
+    <section id="stores" hidden>
+      <div class="card">
+        <strong>Stores near Imadegawa</strong>
+        <ul>
+          <li>Life Chiekoin — no full list</li>
+          <li>AEON STYLE Nishijin Komachi — one product at a time</li>
+          <li>Fresco Petit Karasuma Imadegawa</li>
+          <li>Fresco Horikawa Imadegawa</li>
+          <li>Fresco Mini Kawaramachi Imadegawa</li>
+          <li>iHeart Demachi</li>
+        </ul>
+      </div>
+    </section>
+    <section id="makers" hidden></section>
+    <section id="confirm" hidden>
+      <div class="warn">Paste a maker mail to keep a copy on this phone. Judgment still happens in the Grok chat.</div>
+      <div class="card">
+        <label>Maker</label>
+        <select id="cMaker"></select>
+        <label style="display:block;margin-top:8px">Letter</label>
+        <textarea id="cLetter" placeholder="Paste the Japanese reply"></textarea>
+        <p>
+          <button type="button" id="cSave">Save letter</button>
+          <button type="button" id="cClear">Clear this maker</button>
+        </p>
+        <p class="sub" id="cMeta"></p>
+      </div>
+    </section>
+  </main>
+<script>
+const products = [
+  { makerId:"sato", maker:"Sato", jan:"4973360564511", name:"Sato rice 200g × 3", status:"green", note:"Contains: rice, water. Made in a dedicated facility that does not use peanut, tree nuts, sesame, or shellfish." },
+  { makerId:"sato", maker:"Sato", jan:"4973360566812", name:"Sato rice 200g × 5", status:"green", note:"Contains: rice, water. Same dedicated rice facility as the 3-pack." },
+  { makerId:"sato", maker:"Sato", jan:"4973360236838", name:"Sato cut mochi 1kg", status:"green", note:"Contains: mochi rice, water. Made in a dedicated facility that does not use peanut, tree nuts, sesame, or shellfish." },
+  { makerId:"sato", maker:"Sato", jan:"4973360234636", name:"Sato cut mochi 700g", status:"green", note:"Contains: mochi rice, water. Same dedicated mochi facility as the 1kg bag." },
+  { makerId:"sato", maker:"Sato", jan:"4973360610584", name:"Sato barley rice", status:"green", note:"Contains: rice, barley. Barley is not one of your allergens. Dedicated facility does not use peanut, tree nuts, sesame, or shellfish." },
+  { makerId:"yakult", maker:"Yakult", jan:"4903080988960", name:"New Yakult 5-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 5-pack UPC. Not a single bottle. Not a flavored variety." },
+  { makerId:"yakult", maker:"Yakult", jan:"4903080748960", name:"New Yakult 10-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 10-pack UPC. Not flavored. Not Y1000." },
+  { makerId:"yakult", maker:"Yakult", jan:"4903080508960", name:"New Yakult 6-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 6-pack UPC. Not flavored. Not Y1000." },
+  { makerId:"meiji", maker:"Meiji", jan:"4902705126558", name:"Meiji oishii milk 900ml", status:"yellow", note:"Contains: milk. Does not list peanut, tree nuts, sesame, or shellfish. Company will not give may-contain for every tree nut and shellfish. Not coffee milk or chocolate milk." },
+  { makerId:"meiji", maker:"Meiji", jan:"4902705011625", name:"Meiji Bulgaria plain 400g", status:"yellow", note:"Contains: milk. Does not list peanut, tree nuts, sesame, or shellfish. Company will not give may-contain for every tree nut and shellfish. Not a fruit cup." },
+  { makerId:"meiji", maker:"Meiji", jan:"4902705057821", name:"Meiji Hokkaido butter 200g", status:"pending", note:"Do not eat yet. No facility answer for this butter." },
+  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"4908011500099", name:"Megmilk milk 1000ml", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this 1 liter carton." },
+  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"4908011500105", name:"Megmilk milk 750ml", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this 750ml carton." },
+  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"4903050155989", name:"Megmilk Hokkaido butter 200g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this salted butter." },
+  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"4903050155996", name:"Megmilk unsalted butter 200g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this unsalted butter." },
+  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"4903050509508", name:"Megmilk 6P cheese 102g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only the 102g pack." },
+  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"49212877", name:"Megumi plain yogurt 400g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Not fruit yogurt." },
+  { makerId:"kagome", maker:"Kagome", jan:"4901306010532", name:"Kagome ketchup 500g", status:"yellow", note:"Does not contain peanut, sesame, or several tree nuts. Company would not answer every tree nut and shellfish. Only this bottle." },
+  { makerId:"kagome", maker:"Kagome", jan:"4901306024232", name:"Kagome tomato juice no salt 720ml", status:"yellow", note:"Does not contain peanut, sesame, or several tree nuts. Company would not answer every tree nut and shellfish. Only this bottle." },
+  { makerId:"kagome", maker:"Kagome", jan:"4901306047569", name:"Yasai Ichinichi Kore Ippon 200ml", status:"off", note:"Do not drink. One facility that bottles this also uses almond." },
+  { makerId:"kewpie", maker:"Kewpie", jan:"4901577042072", name:"Kewpie mayonnaise 450g", status:"off", note:"Contains: egg. Do not eat. Same facilities also make sesame dressing. Cashew and pistachio may-contain is unknown." },
+  { makerId:"morinaga-milk", maker:"Morinaga Milk", jan:"4902720167222", name:"Morinaga oishii milk 900ml", status:"pending", note:"Do not drink yet. No answer from the company." },
+  { makerId:"itoen", maker:"Itoen", jan:"4901085003800", name:"Oi Ocha green tea 600ml", status:"yellow", note:"Contains: tea, vitamin C. Does not contain your allergens as ingredients. Made in plants that also bottle other drinks. Only this 600ml UPC." },
+  { makerId:"itoen", maker:"Itoen", jan:"4901085181843", name:"Itoen barley tea 600ml", status:"yellow", note:"Contains: barley tea. Does not contain your allergens as ingredients. Made in plants that also bottle other drinks. Only this 600ml UPC." },
+  { makerId:"itoen", maker:"Itoen", jan:"4901085192009", name:"Oi Ocha 525ml", status:"off", note:"Do not buy. This size is discontinued." },
+  { makerId:"itoen", maker:"Itoen", jan:"4901085181850", name:"Barley tea wrong barcode", status:"off", note:"Do not buy. Wrong UPC. Use 4901085181843." },
+  { makerId:"kikkoman", maker:"Kikkoman", jan:"4901515115172", name:"Kikkoman tokusen marudaizu soy sauce 1L", status:"yellow", note:"Contains: soy, wheat. Wheat is not one of your allergens. This line does not make sesame sauce or seafood soup. No full may-contain statement for the whole facility. Only this 1 liter bottle. Not ponzu or noodle soup." },
+  { makerId:"suntory", maker:"Suntory", jan:"4901777216891", name:"Suntory Tennensui water 550ml", status:"green", note:"Contains: water. Unflavored bottled water only. Not flavored water or sparkling fruit water." },
+  { makerId:"suntory", maker:"Suntory", jan:"4901777216884", name:"Suntory Tennensui water 550ml (alt UPC)", status:"green", note:"Contains: water. Unflavored bottled water only." },
+  { makerId:"nisshin-oillio", maker:"Nisshin Oillio", jan:"4902380135845", name:"Nisshin canola oil 1000g", status:"pending", note:"Do not use yet. Canola oil is a staple we asked about. No company answer on file." },
+  { makerId:"mizkan", maker:"Mizkan", jan:"4902106271208", name:"Mizkan grain vinegar 500ml", status:"pending", note:"Do not use yet. Plain grain vinegar is a staple we asked about. No company answer on file." },
+  { makerId:"nichirei", maker:"Nichirei", jan:"4902130382024", name:"Nichirei broccoli 250g", status:"pending", note:"Do not use yet. Plain frozen broccoli is a staple we asked about. No company answer on file." }
+];
+const makers = [
+  { id:"sato", name:"Sato", status:"green", blurb:"Rice and mochi you can buy." },
+  { id:"yakult", name:"Yakult", status:"yellow", blurb:"Multipacks only." },
+  { id:"morinaga-milk", name:"Morinaga Milk", status:"pending", blurb:"Waiting for milk reply." },
+  { id:"meiji", name:"Meiji", status:"yellow", blurb:"Plain milk and plain yogurt only." },
+  { id:"megmilk", name:"Megmilk Snow Brand", status:"yellow", blurb:"Named dairy packs only." },
+  { id:"kagome", name:"Kagome", status:"yellow", blurb:"Ketchup and no-salt juice only." },
+  { id:"kewpie", name:"Kewpie", status:"off", blurb:"Mayo no." },
+  { id:"calbee", name:"Calbee", status:"off", blurb:"Do not use." },
+  { id:"marukome", name:"Marukome", status:"off", blurb:"Do not use." },
+  { id:"itoen", name:"Itoen", status:"yellow", blurb:"600ml green tea and barley tea only." },
+  { id:"nisshin-oillio", name:"Nisshin Oillio", status:"pending", blurb:"Oil not cleared." },
+  { id:"kikkoman", name:"Kikkoman", status:"yellow", blurb:"1L soy sauce only." },
+  { id:"mizkan", name:"Mizkan", status:"pending", blurb:"Vinegar not cleared." },
+  { id:"nichirei", name:"Nichirei", status:"pending", blurb:"Broccoli not cleared." },
+  { id:"glico", name:"Glico", status:"off", blurb:"Do not use." },
+  { id:"suntory", name:"Suntory", status:"green", blurb:"Unflavored water only." }
+];
+const label = {
+  green: "BUY THIS PACK",
+  yellow: "ONLY THIS PACK",
+  off: "DO NOT EAT",
+  pending: "DO NOT EAT YET",
+  unknown: "NOT ON THE LIST — PUT IT BACK"
+};
+function $(id){ return document.getElementById(id); }
+function show(page){
+  ["scan","card","stores","makers","confirm"].forEach(function(id){
+    $(id).hidden = id !== page;
+  });
+  document.querySelectorAll("nav button").forEach(function(b){
+    b.classList.toggle("on", b.getAttribute("data-p") === page);
+  });
+}
+function renderMakers(){
+  $("makers").innerHTML = makers.map(function(m){
+    var rows = products.filter(function(p){ return p.makerId === m.id; }).map(function(p){
+      return "<tr><td><code>"+p.jan+"</code></td><td>"+p.name+"</td><td>"+p.status+"</td></tr>";
+    }).join("") || "<tr><td colspan='3'>No barcode yet</td></tr>";
+    return "<div class='card "+m.status+"'><strong>"+m.name+"</strong> · "+m.status+"<p class='sub'>"+m.blurb+"</p><table>"+rows+"</table></div>";
+  }).join("");
+}
+function renderCard(){
+  var order = ["green","yellow","pending","off"];
+  var titles = { green:"Buy these", yellow:"Only if the UPC matches", pending:"Not cleared", off:"Do not eat" };
+  $("card").innerHTML = "<p class='warn'>No scan needed: whole fruit and vegetables, bagged white rice (うるち米 only), raw eggs, plain water, salt, white sugar, and raw meat or fish with no sauce. Oyster and scallop are OK. Do not buy seasoned, flavored, or mixed foods unless the UPC is below.</p>" +
+    order.map(function(st){
+      var rows = products.filter(function(p){ return p.status === st; });
+      if (!rows.length) return "";
+      return "<h2 style='font-size:1rem'>"+titles[st]+"</h2>" + rows.map(function(p){
+        return "<div class='hit "+p.status+"'><span class='badge'>"+label[p.status]+"</span><div><strong>"+p.maker+"</strong><br>"+p.name+"<br><code>"+p.jan+"</code><p class='sub'>"+p.note+"</p></div></div>";
+      }).join("");
+    }).join("");
+}
+function lookup(raw){
+  var jan = String(raw||"").replace(/\D/g,"");
+  if(!jan){ $("out").innerHTML = ""; return; }
+  var hit = products.filter(function(p){ return p.jan === jan; })[0];
+  if(!hit){
+    $("out").innerHTML = "<div class='hit unknown'><span class='badge'>"+label.unknown+"</span><p>This UPC is not on your list. Put it back.</p></div>";
+    return;
+  }
+  $("out").innerHTML = "<div class='hit "+hit.status+"'><span class='badge'>"+label[hit.status]+"</span><p><strong>"+hit.maker+"</strong><br>"+hit.name+"<br><code>"+hit.jan+"</code></p><p class='sub'>"+hit.note+"</p></div>";
+}
+function loadLetters(){
+  try { return JSON.parse(localStorage.getItem("kyosafe-letters-v1") || "{}"); } catch(e){ return {}; }
+}
+function fillConfirm(){
+  var sel = $("cMaker");
+  if (sel.options.length) return;
+  makers.forEach(function(m){
+    var o = document.createElement("option");
+    o.value = m.id; o.textContent = m.name;
+    sel.appendChild(o);
+  });
+  function showLetter(){
+    var row = loadLetters()[sel.value];
+    $("cLetter").value = row ? row.text : "";
+    $("cMeta").textContent = row ? "Saved " + row.at : "No letter saved for this maker.";
+  }
+  sel.onchange = showLetter;
+  $("cSave").onclick = function(){
+    var all = loadLetters();
+    all[sel.value] = { text: $("cLetter").value, at: new Date().toISOString() };
+    localStorage.setItem("kyosafe-letters-v1", JSON.stringify(all));
+    showLetter();
+  };
+  $("cClear").onclick = function(){
+    var all = loadLetters();
+    delete all[sel.value];
+    localStorage.setItem("kyosafe-letters-v1", JSON.stringify(all));
+    $("cLetter").value = "";
+    showLetter();
+  };
+  showLetter();
+}
+document.querySelectorAll("nav button").forEach(function(b){
+  b.onclick = function(){
+    show(b.getAttribute("data-p"));
+    if (b.getAttribute("data-p") === "confirm") fillConfirm();
+  };
+});
+$("jan").oninput = function(){ lookup(this.value); };
+renderMakers();
+renderCard();
+show("scan");
+</script>
+</body>
+</html>
