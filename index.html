@@ -154,17 +154,17 @@
           <strong>ココイチ</strong> — <a href="https://www.ichibanya.co.jp/menu/pdf/allergy.pdf" target="_blank" rel="noopener">アレルギー情報一覧（PDF）</a>
           <p class="sub">確認済み（公式表 2026-09-01付）：特定原材料を使用していないカレー（ライス100g／200g）／Allergen-free Curry。表の28品目中、りんご以外は全て「使用なし」表示（ごま・いか・あわび・えび・かにも含む）。注文時にレトルトパックのまま提供してもらうこと（安全のため未開封で出す仕様）。他のメニューは調べていないので個別に確認する。</p>
         </div>
-        <div class="hit unknown">
-          <strong>やよい軒</strong> — <a href="https://www.yayoiken.com/menu/allergy.html" target="_blank" rel="noopener">アレルギー情報一覧</a>
-          <p class="sub">安全な商品は今後調べて追加する。</p>
+        <div class="hit yellow">
+          <strong>やよい軒</strong> — <a href="https://www.yayoiken.com/menu_list/info/26" target="_blank" rel="noopener">アレルギー情報一覧（京都府）</a>
+          <p class="sub">確認済み（公式表 2026-08-01付、京都府版）：銀鮭の塩焼定食、しまほっけ定食、サバの塩焼定食 — いずれも表の28品目中、魚・小麦・大豆以外は「使用なし」。みそ汁も同様に小麦・大豆のみ（貝汁は別商品なのでみそ汁とは別。貝汁は表ではえび・かにのみ表示だが、あさり等は27品目表に含まれないため、貝汁は避けるのが安全）。都道府県が変わると店舗により原材料が異なる場合があるため、他府県で食べる際は同じ手順で確認する。</p>
         </div>
         <div class="hit unknown">
           <strong>プロント</strong> — <a href="https://d10000000b46jeaa.my.salesforce-sites.com/allergensearch?parameter=epronto" target="_blank" rel="noopener">アレルギー情報一覧</a>
-          <p class="sub">安全な商品は今後調べて追加する。</p>
+          <p class="sub">一覧表ではなく検索ツール形式。商品ごとに都度検索して確認する。安全な商品は今後調べて追加する。</p>
         </div>
-        <div class="hit unknown">
+        <div class="hit yellow">
           <strong>松屋</strong> — <a href="https://bento.matsuyafoods.co.jp/matsuya/safety/allergen.html" target="_blank" rel="noopener">アレルギー情報一覧</a>
-          <p class="sub">安全な商品は今後調べて追加する。</p>
+          <p class="sub">確認済み（公式表 2026-09-01付）：牛めし（並・大・特全サイズ）、牛皿、みそ汁、豚汁 — いずれも表の28品目中、落花生・くるみ・あわび・いか・ごま・カシューナッツ・アーモンドは「使用なし」。牛焼肉丼・うな丼・ネギたま系はごま使用なので不可。トッピングやタレを追加する場合は都度表を再確認する。</p>
         </div>
         <p class="sub">表の見方：ごま・いか・たこ・あさり・あわび等の列を見る。●や▲なら頼まない。えび・かに・かき・ほたて以外の貝も頼まない。</p>
       </div>
@@ -348,7 +348,7 @@ function renderCard(){
     var rows = products.filter(function(p){ return p.status === st; });
     if (!rows.length) return "";
     return "<h2 style='font-size:1rem'>"+titles[st]+"</h2>" + rows.map(function(p){
-      return "<div class='hit "+p.status+"'><span class='badge'>"+label[p.status]+"</span><div><strong>"+p.maker+"</strong><br>"+p.name+(p.en?"<br><span class='sub'>"+p.en+"</span>":"")+"<br><code>"+p.jan+"</code><p class='sub'>"+p.note+"</p></div></div>";
+      return "<div class='hit "+p.status+"'><span class='badge'>"+label[p.status]+"</span><div><strong>"+p.maker+"</strong><br>"+p.name+(p.en?"<br><span class='sub'>"+p.en+"</span>":"")+"<br><code>"+p.jan+"</code><p class='sub'>"+p.note+"</p>"+verifiedNote(p)+"</div></div>";
     }).join("");
   }
   $("card").innerHTML = "<p class='warn'>野菜・果物・うるち米・卵・水・塩・上白糖・無塩の生肉魚はそのまま可。かき・ほたては可。味付きは番号が下にあるものだけ。</p>" +
