@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>KyoSafe — ABC</title>
+  <title>KyoSafe</title>
   <style>
     :root { --bg:#f3eee4; --ink:#161513; --muted:#5c574e; --card:#fffcf6; --green:#1b7f3a; --yellow:#b78100; --red:#b42318; --gray:#6b665e; }
     * { box-sizing: border-box; }
@@ -30,41 +30,81 @@
     code { font-size: 12px; }
     .warn { background: #f8e8e6; padding: 10px 12px; border-radius: 10px; font-size: 0.9rem; }
     section[hidden] { display: none !important; }
+    #preview { width: 100%; max-height: 240px; background: #000; border-radius: 10px; margin: 8px 0; display: none; }
+    #camErr { color: #b42318; font-size: 0.85rem; }
   </style>
 </head>
 <body>
   <header>
     <h1>KyoSafe</h1>
-    <div class="sub">If the barcode is not on this list, put it back. Oyster and scallop are OK. Avoid peanut, tree nuts, sesame, and shellfish (squid, octopus, clam, abalone).</div>
+    <div class="sub">かき・ほたては可。落花生・ナッツ・ごま・いか・たこ・あさり・あわびは不可。</div>
   </header>
+  <form name="unknown" method="POST" data-netlify="true" hidden>
+    <input type="hidden" name="form-name" value="unknown" />
+    <input type="text" name="jan" />
+    <input type="text" name="pack_name" />
+    <input type="text" name="store" />
+    <input type="text" name="when" />
+  </form>
+
   <nav>
-    <button type="button" class="on" data-p="scan">Scan</button>
-    <button type="button" data-p="card">Card</button>
-    <button type="button" data-p="stores">Stores</button>
-    <button type="button" data-p="makers">Makers</button>
-    <button type="button" data-p="confirm">Confirm</button>
+    <button type="button" class="on" data-p="scan">スキャン</button>
+    <button type="button" data-p="card">カード</button>
+    <button type="button" data-p="stores">店</button>
+    <button type="button" data-p="unknown">未登録</button>
+    <button type="button" data-p="eats">外食</button>
+    <button type="button" class="adminOnly" data-p="makers" hidden>Makers</button>
+    <button type="button" class="adminOnly" data-p="confirm" hidden>Confirm</button>
   </nav>
   <main>
     <section id="scan">
-      <input id="jan" type="search" inputmode="numeric" placeholder="Type the number under the barcode" />
+      <p>
+        <button type="button" id="camBtn">カメラ</button>
+        <button type="button" id="camStop" hidden>停止</button>
+      </p>
+      <video id="preview" playsinline muted></video>
+      <p id="camErr"></p>
+      <input id="jan" type="search" inputmode="numeric" placeholder="バーコード下の数字" />
       <div id="out"></div>
-      <p class="sub">Green = ingredients and facility are clear. Yellow = does not contain your allergens, but there is no full may-contain / shared-facility statement. Red or gray = do not eat.</p>
+      <p class="sub">緑＝買える。黄＝この番号だけ。赤・灰＝食べない。</p>
     </section>
     <section id="card" hidden></section>
     <section id="stores" hidden>
       <div class="card">
-        <strong>Stores near Imadegawa</strong>
+        <strong>今出川付近</strong>
         <ul>
-          <li>Life Chiekoin — no full list</li>
-          <li>AEON STYLE Nishijin Komachi — one product at a time</li>
-          <li>Fresco Petit Karasuma Imadegawa</li>
-          <li>Fresco Horikawa Imadegawa</li>
-          <li>Fresco Mini Kawaramachi Imadegawa</li>
-          <li>iHeart Demachi</li>
+          <li>ライフ智恵光院</li>
+          <li>イオンスタイル西陣小町</li>
+          <li>フレスコプチ烏丸今出川</li>
+          <li>フレスコ堀川今出川</li>
+          <li>フレスコミニ河原町今出川</li>
+          <li>アイハート出町</li>
         </ul>
+        <p class="sub"><a href="#admin" id="adminLink">管理</a></p>
+      </div>
+    </section>
+    
+    <section id="eats" hidden>
+      <div class="warn">表は28品目まで。店舗の油・器具は共用。表にない＝安全ではない。食べる前にその日の公式ページを開き直す。</div>
+      <div class="card">
+        <strong>公式アレルゲン</strong>
+        <ul>
+          <li><a href="https://www.mcdonalds.co.jp/sustainability/food/allergy_Nutrition/" target="_blank" rel="noopener">マクドナルド</a></li>
+          <li><a href="https://www.starbucks.co.jp/allergy/" target="_blank" rel="noopener">スターバックス</a></li>
+          <li><a href="https://mos.jp/quality/product_info" target="_blank" rel="noopener">モスバーガー</a></li>
+          <li><a href="https://www.sukiya.jp/about/common/pdf/allergy.pdf" target="_blank" rel="noopener">すき家 PDF</a></li>
+          <li><a href="https://www.yoshinoya.com/" target="_blank" rel="noopener">吉野家（サイト内「アレルギー」）</a></li>
+          <li><a href="https://allergy.saizeriya.co.jp/allergy" target="_blank" rel="noopener">サイゼリヤ</a></li>
+          <li><a href="https://www.ichibanya.co.jp/menu/pdf/allergy.pdf" target="_blank" rel="noopener">ココイチ PDF</a></li>
+          <li><a href="https://www.yayoiken.com/menu/allergy.html" target="_blank" rel="noopener">やよい軒</a></li>
+          <li><a href="https://d10000000b46jeaa.my.salesforce-sites.com/allergensearch?parameter=epronto" target="_blank" rel="noopener">プロント</a></li>
+          <li><a href="https://bento.matsuyafoods.co.jp/matsuya/safety/allergen.html" target="_blank" rel="noopener">松屋</a></li>
+        </ul>
+        <p class="sub">ごま・いか・たこ・あさり列を見る。●や▲なら頼まない。かき・ほたて以外の貝も頼まない。</p>
       </div>
     </section>
     <section id="makers" hidden></section>
+    <section id="unknown" hidden></section>
     <section id="confirm" hidden>
       <div class="warn">Paste a maker mail to keep a copy on this phone. Judgment still happens in the Grok chat.</div>
       <div class="card">
@@ -82,67 +122,134 @@
   </main>
 <script>
 const products = [
-  { makerId:"sato", maker:"Sato", jan:"4973360564511", name:"Sato rice 200g × 3", status:"green", note:"Contains: rice, water. Made in a dedicated facility that does not use peanut, tree nuts, sesame, or shellfish." },
-  { makerId:"sato", maker:"Sato", jan:"4973360566812", name:"Sato rice 200g × 5", status:"green", note:"Contains: rice, water. Same dedicated rice facility as the 3-pack." },
-  { makerId:"sato", maker:"Sato", jan:"4973360236838", name:"Sato cut mochi 1kg", status:"green", note:"Contains: mochi rice, water. Made in a dedicated facility that does not use peanut, tree nuts, sesame, or shellfish." },
-  { makerId:"sato", maker:"Sato", jan:"4973360234636", name:"Sato cut mochi 700g", status:"green", note:"Contains: mochi rice, water. Same dedicated mochi facility as the 1kg bag." },
-  { makerId:"sato", maker:"Sato", jan:"4973360610584", name:"Sato barley rice", status:"green", note:"Contains: rice, barley. Barley is not one of your allergens. Dedicated facility does not use peanut, tree nuts, sesame, or shellfish." },
-  { makerId:"yakult", maker:"Yakult", jan:"4903080988960", name:"New Yakult 5-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 5-pack UPC. Not a single bottle. Not a flavored variety." },
-  { makerId:"yakult", maker:"Yakult", jan:"4903080748960", name:"New Yakult 10-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 10-pack UPC. Not flavored. Not Y1000." },
-  { makerId:"yakult", maker:"Yakult", jan:"4903080508960", name:"New Yakult 6-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 6-pack UPC. Not flavored. Not Y1000." },
-  { makerId:"meiji", maker:"Meiji", jan:"4902705126558", name:"Meiji oishii milk 900ml", status:"yellow", note:"Contains: milk. Does not list peanut, tree nuts, sesame, or shellfish. Company will not give may-contain for every tree nut and shellfish. Not coffee milk or chocolate milk." },
-  { makerId:"meiji", maker:"Meiji", jan:"4902705011625", name:"Meiji Bulgaria plain 400g", status:"yellow", note:"Contains: milk. Does not list peanut, tree nuts, sesame, or shellfish. Company will not give may-contain for every tree nut and shellfish. Not a fruit cup." },
-  { makerId:"meiji", maker:"Meiji", jan:"4902705057821", name:"Meiji Hokkaido butter 200g", status:"pending", note:"Do not eat yet. No facility answer for this butter." },
-  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"4908011500099", name:"Megmilk milk 1000ml", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this 1 liter carton." },
-  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"4908011500105", name:"Megmilk milk 750ml", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this 750ml carton." },
-  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"4903050155989", name:"Megmilk Hokkaido butter 200g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this salted butter." },
-  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"4903050155996", name:"Megmilk unsalted butter 200g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this unsalted butter." },
-  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"4903050509508", name:"Megmilk 6P cheese 102g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only the 102g pack." },
-  { makerId:"megmilk", maker:"Megmilk Snow Brand", jan:"49212877", name:"Megumi plain yogurt 400g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Not fruit yogurt." },
-  { makerId:"kagome", maker:"Kagome", jan:"4901306010532", name:"Kagome ketchup 500g", status:"yellow", note:"Does not contain peanut, sesame, or several tree nuts. Company would not answer every tree nut and shellfish. Only this bottle." },
-  { makerId:"kagome", maker:"Kagome", jan:"4901306024232", name:"Kagome tomato juice no salt 720ml", status:"yellow", note:"Does not contain peanut, sesame, or several tree nuts. Company would not answer every tree nut and shellfish. Only this bottle." },
-  { makerId:"kagome", maker:"Kagome", jan:"4901306047569", name:"Yasai Ichinichi Kore Ippon 200ml", status:"off", note:"Do not drink. One facility that bottles this also uses almond." },
-  { makerId:"kewpie", maker:"Kewpie", jan:"4901577042072", name:"Kewpie mayonnaise 450g", status:"off", note:"Contains: egg. Do not eat. Same facilities also make sesame dressing. Cashew and pistachio may-contain is unknown." },
-  { makerId:"morinaga-milk", maker:"Morinaga Milk", jan:"4902720167222", name:"Morinaga oishii milk 900ml", status:"pending", note:"Do not drink yet. No answer from the company." },
-  { makerId:"itoen", maker:"Itoen", jan:"4901085003800", name:"Oi Ocha green tea 600ml", status:"yellow", note:"Contains: tea, vitamin C. Does not contain your allergens as ingredients. Made in plants that also bottle other drinks. Only this 600ml UPC." },
-  { makerId:"itoen", maker:"Itoen", jan:"4901085181843", name:"Itoen barley tea 600ml", status:"yellow", note:"Contains: barley tea. Does not contain your allergens as ingredients. Made in plants that also bottle other drinks. Only this 600ml UPC." },
-  { makerId:"itoen", maker:"Itoen", jan:"4901085192009", name:"Oi Ocha 525ml", status:"off", note:"Do not buy. This size is discontinued." },
-  { makerId:"itoen", maker:"Itoen", jan:"4901085181850", name:"Barley tea wrong barcode", status:"off", note:"Do not buy. Wrong UPC. Use 4901085181843." },
-  { makerId:"kikkoman", maker:"Kikkoman", jan:"4901515115172", name:"Kikkoman tokusen marudaizu soy sauce 1L", status:"yellow", note:"Contains: soy, wheat. Wheat is not one of your allergens. This line does not make sesame sauce or seafood soup. No full may-contain statement for the whole facility. Only this 1 liter bottle. Not ponzu or noodle soup." },
-  { makerId:"suntory", maker:"Suntory", jan:"4901777216891", name:"Suntory Tennensui water 550ml", status:"green", note:"Contains: water. Unflavored bottled water only. Not flavored water or sparkling fruit water." },
-  { makerId:"suntory", maker:"Suntory", jan:"4901777216884", name:"Suntory Tennensui water 550ml (alt UPC)", status:"green", note:"Contains: water. Unflavored bottled water only." },
-  { makerId:"nisshin-oillio", maker:"Nisshin Oillio", jan:"4902380135845", name:"Nisshin canola oil 1000g", status:"pending", note:"Do not use yet. Canola oil is a staple we asked about. No company answer on file." },
-  { makerId:"mizkan", maker:"Mizkan", jan:"4902106271208", name:"Mizkan grain vinegar 500ml", status:"pending", note:"Do not use yet. Plain grain vinegar is a staple we asked about. No company answer on file." },
-  { makerId:"nichirei", maker:"Nichirei", jan:"4902130382024", name:"Nichirei broccoli 250g", status:"pending", note:"Do not use yet. Plain frozen broccoli is a staple we asked about. No company answer on file." }
+  { makerId:"sato", maker:"サトウ食品", jan:"4973360564511", name:"サトウのごはん コシヒカリ 200g×3", en:"Sato Koshihikari rice 200g × 3", status:"green", note:"Contains: rice, water. Made in a dedicated facility that does not use peanut, tree nuts, sesame, or shellfish." },
+  { makerId:"sato", maker:"サトウ食品", jan:"4973360566812", name:"サトウのごはん コシヒカリ 200g×5", en:"Sato Koshihikari rice 200g × 5", status:"green", note:"Contains: rice, water. Same dedicated rice facility as the 3-pack." },
+  { makerId:"sato", maker:"サトウ食品", jan:"4973360236838", name:"サトウの切り餅 パリッとスリット 1kg", en:"Sato cut mochi 1kg", status:"green", note:"Contains: mochi rice, water. Made in a dedicated facility that does not use peanut, tree nuts, sesame, or shellfish." },
+  { makerId:"sato", maker:"サトウ食品", jan:"4973360234636", name:"サトウの切り餅 パリッとスリット 700g", en:"Sato cut mochi 700g", status:"green", note:"Contains: mochi rice, water. Same dedicated mochi facility as the 1kg bag." },
+  { makerId:"sato", maker:"サトウ食品", jan:"4973360610584", name:"サトウの麦ごはん", en:"Sato barley rice", status:"green", note:"Contains: rice, barley. Barley is not one of your allergens. Dedicated facility does not use peanut, tree nuts, sesame, or shellfish." },
+  { makerId:"yakult", maker:"ヤクルト", jan:"4903080988960", name:"Newヤクルト 5本パック", en:"New Yakult 5-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 5-pack UPC. Not a single bottle. Not a flavored variety." },
+  { makerId:"yakult", maker:"ヤクルト", jan:"4903080748960", name:"Newヤクルト 10本パック", en:"New Yakult 10-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 10-pack UPC. Not flavored. Not Y1000." },
+  { makerId:"yakult", maker:"ヤクルト", jan:"4903080508960", name:"Newヤクルト 6本パック", en:"New Yakult 6-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 6-pack UPC. Not flavored. Not Y1000." },
+  { makerId:"meiji", maker:"明治", jan:"4902705126558", name:"明治おいしい牛乳 900ml", en:"Meiji oishii milk 900ml", status:"yellow", note:"Contains: milk. Does not list peanut, tree nuts, sesame, or shellfish. Company will not give may-contain for every tree nut and shellfish. Not coffee milk or chocolate milk." },
+  { makerId:"meiji", maker:"明治", jan:"4902705011625", name:"明治ブルガリアLB81プレーン 400g", en:"Meiji Bulgaria plain 400g", status:"yellow", note:"Contains: milk. Does not list peanut, tree nuts, sesame, or shellfish. Company will not give may-contain for every tree nut and shellfish. Not a fruit cup." },
+  { makerId:"meiji", maker:"明治", jan:"4902705057821", name:"明治北海道バター 200g", en:"Meiji Hokkaido butter 200g", status:"pending", note:"Do not eat yet. No facility answer for this butter." },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4908011500099", name:"おいしい牛乳 1000ml", en:"Megmilk oishii milk 1000ml", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this 1 liter carton." },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4908011500105", name:"おいしい牛乳 750ml", en:"Megmilk oishii milk 750ml", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this 750ml carton." },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4903050155989", name:"雪印北海道バター 200g", en:"Megmilk Hokkaido butter 200g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this salted butter." },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4903050155996", name:"雪印北海道バター 食塩不使用 200g", en:"Megmilk unsalted butter 200g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this unsalted butter." },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4903050509508", name:"6Pチーズ 102g", en:"Megmilk 6P cheese 102g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only the 102g pack." },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"49212877", name:"ナチュレ 恵 プレーン 400g", en:"Megumi plain yogurt 400g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Not fruit yogurt." },
+  { makerId:"kagome", maker:"カゴメ", jan:"4901306010532", name:"カゴメトマトケチャップ 500g", en:"Kagome ketchup 500g", status:"yellow", note:"Does not contain peanut, sesame, or several tree nuts. Company would not answer every tree nut and shellfish. Only this bottle." },
+  { makerId:"kagome", maker:"カゴメ", jan:"4901306024232", name:"カゴメトマトジュース食塩無添加 720ml", en:"Kagome tomato juice no salt 720ml", status:"yellow", note:"Does not contain peanut, sesame, or several tree nuts. Company would not answer every tree nut and shellfish. Only this bottle." },
+  { makerId:"kagome", maker:"カゴメ", jan:"4901306047569", name:"野菜一日これ一本 200ml", en:"Yasai Ichinichi Kore Ippon 200ml", status:"off", note:"Do not drink. One facility that bottles this also uses almond." },
+  { makerId:"kewpie", maker:"キユーピー", jan:"4901577042072", name:"キユーピーマヨネーズ 450g", en:"Kewpie mayonnaise 450g", status:"off", note:"Contains: egg. Do not eat. Same facilities also make sesame dressing. Cashew and pistachio may-contain is unknown." },
+  { makerId:"morinaga-milk", maker:"森永乳業", jan:"4902720167222", name:"森永おいしい牛乳 900ml", en:"Morinaga oishii milk 900ml", status:"yellow", note:"Contains: milk. Filling line does not run almond drinks, sesame flavor, or desserts. Those foods may still enter the same factory. Only this 900ml UPC. Not coffee milk." },
+  { makerId:"itoen", maker:"伊藤園", jan:"4901085003800", name:"お～いお茶 緑茶 PET 600ml", en:"Oi Ocha green tea 600ml", status:"yellow", note:"Contains: tea, vitamin C. Does not contain your allergens as ingredients. Made in plants that also bottle other drinks. Only this 600ml UPC." },
+  { makerId:"itoen", maker:"伊藤園", jan:"4901085181843", name:"健康ミネラルむぎ茶 600ml", en:"Itoen barley tea 600ml", status:"yellow", note:"Contains: barley tea. Does not contain your allergens as ingredients. Made in plants that also bottle other drinks. Only this 600ml UPC." },
+  { makerId:"itoen", maker:"伊藤園", jan:"4901085192009", name:"お～いお茶 緑茶 525ml", en:"Oi Ocha 525ml", status:"off", note:"Do not buy. This size is discontinued." },
+  { makerId:"itoen", maker:"伊藤園", jan:"4901085181850", name:"むぎ茶 誤JAN", en:"Barley tea wrong UPC", status:"off", note:"Do not buy. Wrong UPC. Use 4901085181843." },
+  { makerId:"kikkoman", maker:"キッコーマン", jan:"4901515115172", name:"キッコーマン特選丸大豆しょうゆ 1L", en:"Kikkoman tokusen marudaizu soy sauce 1L", status:"yellow", note:"Contains: soy, wheat. Wheat is not one of your allergens. This line does not make sesame sauce or seafood soup. No full may-contain statement for the whole facility. Only this 1 liter bottle. Not ponzu or noodle soup." },
+
+  { makerId:"kikkoman", maker:"キッコーマン", jan:"4901515120404", name:"キッコーマン特選丸大豆しょうゆ 500ml", en:"Kikkoman tokusen marudaizu soy sauce 500ml", status:"yellow", note:"Contains: soy, wheat. Wheat is not one of your allergens. This line does not make sesame sauce or seafood soup. No full may-contain statement for the whole facility. Only this 500ml bottle. Not ponzu or noodle soup." },
+  { makerId:"suntory", maker:"サントリー", jan:"4901777216891", name:"サントリー天然水 550ml", en:"Suntory Tennensui 550ml", status:"green", note:"Contains: water. Unflavored bottled water only. Not flavored water or sparkling fruit water." },
+  { makerId:"suntory", maker:"サントリー", jan:"4901777216884", name:"サントリー天然水 550ml（別JAN）", en:"Suntory Tennensui 550ml (alt UPC)", status:"green", note:"Contains: water. Unflavored bottled water only." },
+  { makerId:"nisshin-oillio", maker:"日清オイリオ", jan:"4902380135845", name:"日清キャノーラ油 1000g", en:"Nisshin canola oil 1000g", status:"pending", note:"Do not use yet. Canola oil is a staple we asked about. No company answer on file." },
+  { makerId:"mizkan", maker:"ミツカン", jan:"4902106271208", name:"ミツカン穀物酢 500ml", en:"Mizkan grain vinegar 500ml", status:"pending", note:"Do not use yet. Plain grain vinegar is a staple we asked about. No company answer on file." },
+  { makerId:"nichirei", maker:"ニチレイ", jan:"4902130382024", name:"ニチレイブロッコリー 250g", en:"Nichirei broccoli 250g", status:"pending", note:"Do not use yet. Plain frozen broccoli is a staple we asked about. No company answer on file." }
+];
+
+const prefixes = [
+  { prefix:"4902560", makerId:"hagoromo", policy:"はごろもフーズ。ポポロスパ7分700gだけ。ミートソース・コーン・シーチキン・あさりソースは戻す。" },
+  { prefix:"4973360", makerId:"sato", policy:"サトウ食品。パックご飯・切り餅の掲載JANだけ。味付きご飯は戻す。" },
+
+  { makerId:"hagoromo", maker:"はごろもフーズ", jan:"4902560070072", name:"はごろもミートソース 290g", en:"Hagoromo meat sauce 290g", status:"off", note:"Do not eat. Same filler as other sauces. Clam is brought into that factory." },
+  { makerId:"hagoromo", maker:"はごろもフーズ", jan:"4902560310147", name:"ポポロスパ7分 結束 700g", en:"Hagoromo Poporo spaghetti 7-min 700g", status:"yellow", note:"Contains: durum wheat. Wheat is not one of your allergens. They said this pasta line does not run sesame or seafood sauce and clam is not brought into that plant. Only this 700g pack. Not sauce." },
+  { makerId:"hagoromo", maker:"はごろもフーズ", jan:"4902560226066", name:"シャキッとコーン 190g", en:"Hagoromo crisp corn 190g", status:"off", note:"Do not eat. Clam is brought into that factory." },
+  { prefix:"4903080", makerId:"yakult", policy:"ヤクルト。Newヤクルトの複数本パックだけ。1本売り・Y1000・味付きは戻す。" },
+  { prefix:"4902705", makerId:"meiji", policy:"明治。おいしい牛乳900mlとブルガリアプレーンだけ。コーヒー牛乳・果物ヨーグルトは戻す。" },
+  { prefix:"4902704", makerId:"meiji", policy:"明治。掲載JAN以外は戻す。" },
+  { prefix:"4908011", makerId:"megmilk", policy:"雪印メグミルク。掲載の牛乳だけ。" },
+  { prefix:"4903050", makerId:"megmilk", policy:"雪印メグミルク。掲載のバター・6Pチーズだけ。" },
+  { prefix:"4901306", makerId:"kagome", policy:"カゴメ。ケチャップ500gと食塩無添加トマトジュースだけ。野菜一日これ一本は不可。" },
+  { prefix:"4901577", makerId:"kewpie", policy:"キユーピー。マヨネーズ不可。他も戻す。" },
+  { prefix:"4902720", makerId:"morinaga-milk", policy:"森永乳業。おいしい牛乳900mlだけ。コーヒー牛乳は戻す。" },
+  { prefix:"4901085", makerId:"itoen", policy:"伊藤園。お～いお茶600mlと健康ミネラルむぎ茶600mlだけ。" },
+  { prefix:"4901515", makerId:"kikkoman", policy:"キッコーマン。特選丸大豆しょうゆ1Lと500mlだけ。つゆ・ぽん酢は戻す。" },
+  { prefix:"4901777", makerId:"suntory", policy:"サントリー。天然水だけ。味付き水は戻す。" },
+  { prefix:"4902380", makerId:"nisshin-oillio", policy:"日清オイリオ。未確認。戻す。" },
+  { prefix:"4902106", makerId:"mizkan", policy:"ミツカン。未確認。戻す。" },
+  { prefix:"4902130", makerId:"nichirei", policy:"ニチレイ。未確認。戻す。" },
 ];
 const makers = [
-  { id:"sato", name:"Sato", status:"green", blurb:"Rice and mochi you can buy." },
-  { id:"yakult", name:"Yakult", status:"yellow", blurb:"Multipacks only." },
-  { id:"morinaga-milk", name:"Morinaga Milk", status:"pending", blurb:"Waiting for milk reply." },
-  { id:"meiji", name:"Meiji", status:"yellow", blurb:"Plain milk and plain yogurt only." },
-  { id:"megmilk", name:"Megmilk Snow Brand", status:"yellow", blurb:"Named dairy packs only." },
-  { id:"kagome", name:"Kagome", status:"yellow", blurb:"Ketchup and no-salt juice only." },
-  { id:"kewpie", name:"Kewpie", status:"off", blurb:"Mayo no." },
-  { id:"calbee", name:"Calbee", status:"off", blurb:"Do not use." },
-  { id:"marukome", name:"Marukome", status:"off", blurb:"Do not use." },
-  { id:"itoen", name:"Itoen", status:"yellow", blurb:"600ml green tea and barley tea only." },
-  { id:"nisshin-oillio", name:"Nisshin Oillio", status:"pending", blurb:"Oil not cleared." },
-  { id:"kikkoman", name:"Kikkoman", status:"yellow", blurb:"1L soy sauce only." },
-  { id:"mizkan", name:"Mizkan", status:"pending", blurb:"Vinegar not cleared." },
-  { id:"nichirei", name:"Nichirei", status:"pending", blurb:"Broccoli not cleared." },
-  { id:"glico", name:"Glico", status:"off", blurb:"Do not use." },
-  { id:"suntory", name:"Suntory", status:"green", blurb:"Unflavored water only." }
+  { id:"sato", name:"サトウ食品", status:"green", blurb:"Rice and mochi you can buy." },
+  { id:"yakult", name:"ヤクルト", status:"yellow", blurb:"Multipacks only." },
+  { id:"morinaga-milk", name:"森永乳業", status:"yellow", blurb:"900ml plain milk only." },
+  { id:"meiji", name:"明治", status:"yellow", blurb:"Plain milk and plain yogurt only." },
+  { id:"megmilk", name:"雪印メグミルク", status:"yellow", blurb:"Named dairy packs only." },
+  { id:"kagome", name:"カゴメ", status:"yellow", blurb:"Ketchup and no-salt juice only." },
+  { id:"kewpie", name:"キユーピー", status:"off", blurb:"Mayo no." },
+  { id:"calbee", name:"カルビー", status:"off", blurb:"Do not use." },
+  { id:"marukome", name:"マルコメ", status:"off", blurb:"Do not use." },
+  { id:"itoen", name:"伊藤園", status:"yellow", blurb:"600ml green tea and barley tea only." },
+  { id:"nisshin-oillio", name:"日清オイリオ", status:"pending", blurb:"Oil not cleared." },
+  { id:"kikkoman", name:"キッコーマン", status:"yellow", blurb:"1L soy sauce only." },
+  { id:"mizkan", name:"ミツカン", status:"pending", blurb:"Vinegar not cleared." },
+  { id:"nichirei", name:"ニチレイ", status:"pending", blurb:"Broccoli not cleared." },
+  { id:"glico", name:"グリコ", status:"off", blurb:"Do not use." },
+  { id:"suntory", name:"サントリー", status:"green", blurb:"Unflavored water only." },
+  { id:"hagoromo", name:"はごろもフーズ", status:"yellow", blurb:"ポポロスパ700g only." }
 ];
 const label = {
-  green: "BUY THIS PACK",
-  yellow: "ONLY THIS PACK",
-  off: "DO NOT EAT",
-  pending: "DO NOT EAT YET",
-  unknown: "NOT ON THE LIST — PUT IT BACK"
+  green: "買える",
+  yellow: "この番号だけ",
+  off: "食べない",
+  pending: "未確認・食べない",
+  unknown: "未登録"
 };
 function $(id){ return document.getElementById(id); }
+function loadUnknown(){
+  try { return JSON.parse(localStorage.getItem("kyosafe-unknown-v1") || "[]"); } catch(e){ return []; }
+}
+function addUnknown(jan, name, store){
+  var row = { jan: jan, name: name || "", store: store || "", at: new Date().toISOString() };
+  var all = loadUnknown();
+  all.push(row);
+  localStorage.setItem("kyosafe-unknown-v1", JSON.stringify(all));
+  renderUnknown();
+  var body = new URLSearchParams();
+  body.set("form-name", "unknown");
+  body.set("jan", row.jan);
+  body.set("pack_name", row.name);
+  body.set("store", row.store);
+  body.set("when", row.at);
+  return fetch("/", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: body.toString()
+  }).then(function(r){ return r.ok; }).catch(function(){ return false; });
+}
+function renderUnknown(){
+  var all = loadUnknown();
+  var text = all.map(function(r){
+    return r.jan + " | " + (r.name || "(no name)") + " | " + (r.store || "(no store)") + " | " + r.at;
+  }).join("\\n");
+  $("unknown").innerHTML = "<p class='warn'>未登録。食べない。送信済みかコピーして管理者へ。</p>" +
+    (all.length ? all.map(function(r){
+      return "<div class='hit unknown'><code>"+r.jan+"</code><p class='sub'>"+(r.name||"(no name)")+" · "+(r.store||"(no store)")+"</p></div>";
+    }).join("") : "<p class='sub'>No unknown scans yet.</p>") +
+    "<p><button type='button' id='unkCopy'>リストをコピー</button> <button type='button' id='unkWipe'>消去</button></p>";
+  $("unkCopy").onclick = function(){
+    var payload = "Unknown UPCs for admin (do not eat)\\n" + (text || "(none)");
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(payload);
+    else prompt("Copy this for admin", payload);
+  };
+  $("unkWipe").onclick = function(){
+    localStorage.removeItem("kyosafe-unknown-v1");
+    renderUnknown();
+  };
+}
 function show(page){
-  ["scan","card","stores","makers","confirm"].forEach(function(id){
+  ["scan","card","stores","eats","makers","unknown","confirm"].forEach(function(id){
     $(id).hidden = id !== page;
   });
   document.querySelectorAll("nav button").forEach(function(b){
@@ -152,32 +259,48 @@ function show(page){
 function renderMakers(){
   $("makers").innerHTML = makers.map(function(m){
     var rows = products.filter(function(p){ return p.makerId === m.id; }).map(function(p){
-      return "<tr><td><code>"+p.jan+"</code></td><td>"+p.name+"</td><td>"+p.status+"</td></tr>";
+      return "<tr><td><code>"+p.jan+"</code></td><td>"+p.name+(p.en?"<br><span class='sub'>"+p.en+"</span>":"")+"</td><td>"+p.status+"</td></tr>";
     }).join("") || "<tr><td colspan='3'>No barcode yet</td></tr>";
     return "<div class='card "+m.status+"'><strong>"+m.name+"</strong> · "+m.status+"<p class='sub'>"+m.blurb+"</p><table>"+rows+"</table></div>";
   }).join("");
 }
 function renderCard(){
-  var order = ["green","yellow","pending","off"];
-  var titles = { green:"Buy these", yellow:"Only if the UPC matches", pending:"Not cleared", off:"Do not eat" };
-  $("card").innerHTML = "<p class='warn'>No scan needed: whole fruit and vegetables, bagged white rice (うるち米 only), raw eggs, plain water, salt, white sugar, and raw meat or fish with no sauce. Oyster and scallop are OK. Do not buy seasoned, flavored, or mixed foods unless the UPC is below.</p>" +
-    order.map(function(st){
-      var rows = products.filter(function(p){ return p.status === st; });
-      if (!rows.length) return "";
-      return "<h2 style='font-size:1rem'>"+titles[st]+"</h2>" + rows.map(function(p){
-        return "<div class='hit "+p.status+"'><span class='badge'>"+label[p.status]+"</span><div><strong>"+p.maker+"</strong><br>"+p.name+"<br><code>"+p.jan+"</code><p class='sub'>"+p.note+"</p></div></div>";
-      }).join("");
+  var open = ["green","yellow"];
+  var fold = ["pending","off"];
+  var titles = { green:"買える", yellow:"この番号だけ", pending:"未確認", off:"食べない" };
+  function block(st){
+    var rows = products.filter(function(p){ return p.status === st; });
+    if (!rows.length) return "";
+    return "<h2 style='font-size:1rem'>"+titles[st]+"</h2>" + rows.map(function(p){
+      return "<div class='hit "+p.status+"'><span class='badge'>"+label[p.status]+"</span><div><strong>"+p.maker+"</strong><br>"+p.name+(p.en?"<br><span class='sub'>"+p.en+"</span>":"")+"<br><code>"+p.jan+"</code><p class='sub'>"+p.note+"</p></div></div>";
     }).join("");
+  }
+  $("card").innerHTML = "<p class='warn'>野菜・果物・うるち米・卵・水・塩・上白糖・無塩の生肉魚はそのまま可。かき・ほたては可。味付きは番号が下にあるものだけ。</p>" +
+    open.map(block).join("") +
+    "<details style='margin-top:16px'><summary>食べない・未確認</summary>" + fold.map(block).join("") + "</details>";
 }
 function lookup(raw){
   var jan = String(raw||"").replace(/\D/g,"");
   if(!jan){ $("out").innerHTML = ""; return; }
   var hit = products.filter(function(p){ return p.jan === jan; })[0];
   if(!hit){
-    $("out").innerHTML = "<div class='hit unknown'><span class='badge'>"+label.unknown+"</span><p>This UPC is not on your list. Put it back.</p></div>";
+    var pre = prefixes.filter(function(x){ return jan.indexOf(x.prefix) === 0; })[0];
+    var extra = pre ? "<p class='sub'>"+pre.policy+"</p>" + products.filter(function(p){ return p.makerId === pre.makerId; }).map(function(p){ return "<code>"+p.jan+"</code> "+p.name+" "+p.status; }).join("<br>") : "<p class='sub'>このメーカーは未確認です。</p>";
+    var why = "<p class='sub'>食べない理由：この番号の書面がない。日本の表示は落花生・くるみ等の一部だけが義務。ごま・多くのナッツ・いか・たこ・あさりは原材料にも工場の隣のラインにも入りうる。表示なし＝安全ではない。</p>";
+    $("out").innerHTML = "<div class='hit unknown'><span class='badge'>未登録</span>"+extra+why+"<p class='sub'>パックの日本語名を入れて保存。食べない。</p><input id='unkName' type='text' placeholder='商品名（パッケージのまま）' /><label class='sub'>店</label><select id='unkStore'><option value=''>店を選ぶ</option><option>ライフ智恵光院</option><option>イオンスタイル西陣小町</option><option>フレスコプチ烏丸今出川</option><option>フレスコ堀川今出川</option><option>フレスコミニ河原町今出川</option><option>アイハート出町</option><option value='other'>その他</option></select><input id='unkStoreOther' type='text' placeholder='店名' hidden /><p><button type='button' id='unkSave'>保存して管理者へ</button></p><p class='sub' id='unkSend'></p></div>";
+    $("unkStore").onchange = function(){
+      $("unkStoreOther").hidden = this.value !== "other";
+    };
+    $("unkSave").onclick = function(){
+      var store = $("unkStore").value === "other" ? $("unkStoreOther").value : $("unkStore").value;
+      $("unkSend").textContent = "送信中…";
+      addUnknown(jan, $("unkName").value, store).then(function(ok){
+        $("unkSend").textContent = ok ? "送信しました" : "送信できませんでした。未登録タブからコピーしてください";
+      });
+    };
     return;
   }
-  $("out").innerHTML = "<div class='hit "+hit.status+"'><span class='badge'>"+label[hit.status]+"</span><p><strong>"+hit.maker+"</strong><br>"+hit.name+"<br><code>"+hit.jan+"</code></p><p class='sub'>"+hit.note+"</p></div>";
+  $("out").innerHTML = "<div class='hit "+hit.status+"'><span class='badge'>"+label[hit.status]+"</span><p><strong>"+hit.maker+"</strong><br>"+hit.name+(hit.en?"<br>"+hit.en:"")+"<br><code>"+hit.jan+"</code></p><p class='sub'>"+hit.note+"</p></div>";
 }
 function loadLetters(){
   try { return JSON.parse(localStorage.getItem("kyosafe-letters-v1") || "{}"); } catch(e){ return {}; }
@@ -215,12 +338,79 @@ document.querySelectorAll("nav button").forEach(function(b){
   b.onclick = function(){
     show(b.getAttribute("data-p"));
     if (b.getAttribute("data-p") === "confirm") fillConfirm();
+    if (b.getAttribute("data-p") === "unknown") renderUnknown();
   };
 });
+function revealAdmin(){
+  document.querySelectorAll(".adminOnly").forEach(function(b){ b.hidden = false; });
+}
+if (location.hash === "#admin") revealAdmin();
+window.addEventListener("hashchange", function(){ if (location.hash === "#admin") revealAdmin(); });
 $("jan").oninput = function(){ lookup(this.value); };
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(function(){});
+}
+
 renderMakers();
 renderCard();
+renderUnknown();
 show("scan");
+
+var camStream = null;
+var camTimer = null;
+function setCamErr(msg){ $("camErr").textContent = msg || ""; }
+function stopCam(){
+  if (camTimer) { cancelAnimationFrame(camTimer); camTimer = null; }
+  if (camStream) {
+    camStream.getTracks().forEach(function(t){ t.stop(); });
+    camStream = null;
+  }
+  $("preview").style.display = "none";
+  $("camStop").hidden = true;
+}
+async function readFrame(video, detector){
+  if (!camStream) return;
+  try {
+    var codes = await detector.detect(video);
+    if (codes && codes.length) {
+      var raw = String(codes[0].rawValue || "").replace(/\D/g,"");
+      if (raw) {
+        $("jan").value = raw;
+        lookup(raw);
+        stopCam();
+        return;
+      }
+    }
+  } catch (e) {}
+  camTimer = requestAnimationFrame(function(){ readFrame(video, detector); });
+}
+$("camStop").onclick = stopCam;
+$("camBtn").onclick = async function(){
+  setCamErr("");
+  if (!window.isSecureContext) {
+    setCamErr("Open the Netlify https link, not a downloaded file.");
+    return;
+  }
+  if (!("BarcodeDetector" in window)) {
+    setCamErr("This browser cannot read barcodes. Type the number. Chrome or Edge on the phone works best.");
+    return;
+  }
+  try {
+    var detector = new BarcodeDetector({ formats: ["ean_13", "ean_8", "upc_a", "upc_e", "code_128"] });
+    camStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" } },
+      audio: false
+    });
+    var video = $("preview");
+    video.srcObject = camStream;
+    video.style.display = "block";
+    $("camStop").hidden = false;
+    await video.play();
+    readFrame(video, detector);
+  } catch (e) {
+    setCamErr("Camera was blocked. Allow camera for this site, or type the number.");
+  }
+};
 </script>
 </body>
 </html>
