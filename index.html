@@ -101,7 +101,7 @@
           <li><a href="https://www.google.com/maps/search/?api=1&query=イオンスタイル西陣小町+京都" target="_blank" rel="noopener">イオンスタイル西陣小町</a></li>
           <li><a href="https://www.google.com/maps/search/?api=1&query=フレスコプチ烏丸今出川+京都" target="_blank" rel="noopener">フレスコプチ烏丸今出川</a></li>
           <li><a href="https://www.google.com/maps/search/?api=1&query=フレスコ堀川今出川+京都" target="_blank" rel="noopener">フレスコ堀川今出川</a></li>
-          <li><a href="https://www.google.com/maps/search/?api=1&query=フレスコミニ河原町今出川+京都" target="_blank" rel="noopener">フレスコミニ河原町今出川</a></li>
+          <li><a href="https://www.google.com/maps/search/?api=1&query=生鮮館なかむら+堀川店+京都" target="_blank" rel="noopener">生鮮館なかむら 堀川店</a></li>
           <li><a href="https://www.google.com/maps/search/?api=1&query=アイハート出町+京都" target="_blank" rel="noopener">アイハート出町</a></li>
         </ul>
         <p class="sub"><a href="#admin" id="adminLink">管理</a></p>
@@ -380,7 +380,7 @@ function lookup(raw){
     var pre = prefixes.filter(function(x){ return jan.indexOf(x.prefix) === 0; })[0];
     var extra = pre ? "<p class='sub'>"+pre.policy+"</p>" + products.filter(function(p){ return p.makerId === pre.makerId; }).map(function(p){ return "<code>"+p.jan+"</code> "+p.name+" "+p.status; }).join("<br>") : "<p class='sub'>このメーカーは未確認です。</p>";
     var why = "<p class='sub'>食べない理由：この番号の書面がない。日本の表示は落花生・くるみ等の一部だけが義務。ごま・多くのナッツ・いか・たこ・あさりは原材料にも工場の隣のラインにも入りうる。表示なし＝安全ではない。</p>";
-    $("out").innerHTML = "<div class='hit unknown'><span class='badge'>未登録</span>"+extra+why+"<p class='sub'>パックの日本語名を入れて保存。食べない。</p><input id='unkName' type='text' placeholder='商品名（パッケージのまま）' /><label class='sub'>店</label><select id='unkStore'><option value=''>店を選ぶ</option><option>ライフ智恵光院</option><option>イオンスタイル西陣小町</option><option>フレスコプチ烏丸今出川</option><option>フレスコ堀川今出川</option><option>フレスコミニ河原町今出川</option><option>アイハート出町</option><option>オーガニックプラザ 出町店</option><option value='other'>その他</option></select><input id='unkStoreOther' type='text' placeholder='店名' hidden /><p><button type='button' id='unkSave'>保存</button></p><p class='sub' id='unkSend'></p></div>";
+    $("out").innerHTML = "<div class='hit unknown'><span class='badge'>未登録</span>"+extra+why+"<p class='sub'>パックの日本語名を入れて保存。食べない。</p><input id='unkName' type='text' placeholder='商品名（パッケージのまま）' /><label class='sub'>店</label><select id='unkStore'><option value=''>店を選ぶ</option><option>ライフ智恵光院</option><option>イオンスタイル西陣小町</option><option>フレスコプチ烏丸今出川</option><option>フレスコ堀川今出川</option><option>生鮮館なかむら 堀川店</option><option>アイハート出町</option><option>オーガニックプラザ 出町店</option><option value='other'>その他</option></select><input id='unkStoreOther' type='text' placeholder='店名' hidden /><p><button type='button' id='unkSave'>保存</button></p><p class='sub' id='unkSend'></p></div>";
     $("unkStore").onchange = function(){
       $("unkStoreOther").hidden = this.value !== "other";
     };
