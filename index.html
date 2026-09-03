@@ -39,8 +39,14 @@
     <h1>KyoSafe</h1>
     <div class="sub">かき・ほたては可。落花生・ナッツ・ごま・いか・たこ・あさり・あわびは不可。</div>
   </header>
+  <div id="a2hs" class="warn" hidden style="margin:0 16px 8px;max-width:788px">
+    <span id="a2hsText"></span>
+    <button type="button" id="a2hsGo" style="margin-left:8px" hidden>ホーム画面に追加</button>
+    <button type="button" id="a2hsClose" style="float:right">✕</button>
+  </div>
   <nav>
-    <button type="button" class="on" data-p="scan">スキャン</button>
+    <button type="button" data-p="scan">スキャン</button>
+    <button type="button" data-p="emergency" style="background:#f8e8e6">緊急カード</button>
     <button type="button" data-p="card">カード</button>
     <button type="button" data-p="stores">店</button>
     <button type="button" data-p="unknown">未登録</button>
@@ -49,6 +55,32 @@
     <button type="button" class="adminOnly" data-p="confirm" hidden>Confirm</button>
   </nav>
   <main>
+    <section id="emergency" hidden>
+      <div class="hit off" style="font-size:1.4rem;line-height:1.6;text-align:center;padding:24px">
+        <strong>⚠️ 食物アレルギーがあります</strong><br>
+        <span style="font-size:1.1rem">I have severe food allergies.</span>
+      </div>
+      <div class="card">
+        <p style="font-size:1.3rem;font-weight:700;color:var(--red)">
+          落花生・ナッツ・ごま・いか・たこ・あさり・あわびは食べられません
+        </p>
+        <p class="sub">(Peanut, tree nuts, sesame, squid, octopus, clams, abalone — cannot eat)</p>
+        <p style="font-size:1.15rem;font-weight:700;color:var(--green)">
+          かき・ほたては大丈夫です
+        </p>
+        <p class="sub">(Oyster and scallop are OK)</p>
+      </div>
+      <div class="card">
+        <strong>スタッフへ見せる文章</strong>
+        <p style="font-size:1.15rem">上記のアレルギーがあります。この中に一つでも入っていたら食べられません。少量でも危険です。教えていただけますか。</p>
+        <p class="sub">(I have the allergies above. If a dish contains even a small amount of any of them, I cannot eat it. Could you please check?)</p>
+      </div>
+      <div class="card">
+        <strong>緊急時</strong>
+        <p style="font-size:1.15rem">119 → 救急車（アレルギー反応・アナフィラキシー）</p>
+        <p class="sub">Call 119 for an ambulance if a reaction happens.</p>
+      </div>
+    </section>
     <section id="scan">
       <p>
         <button type="button" id="camBtn">カメラ</button>
@@ -202,12 +234,32 @@ function $(id){ return document.getElementById(id); }
 function loadUnknown(){
   try { return JSON.parse(localStorage.getItem("kyosafe-unknown-v1") || "[]"); } catch(e){ return []; }
 }
+var GFORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfPRhv2zTLXVScaA6PG3sSPO5o7ejkGETCVZS_yCku3sQxKfw/formResponse";
+var GFORM_FIELDS = {
+  jan: "entry.263790965",
+  name: "entry.925495886",
+  store: "entry.1593502154",
+  when: "entry.1125969273"
+};
 function addUnknown(jan, name, store){
   var row = { jan: jan, name: name || "", store: store || "", at: new Date().toISOString() };
   var all = loadUnknown();
   all.push(row);
   localStorage.setItem("kyosafe-unknown-v1", JSON.stringify(all));
   renderUnknown();
+  try {
+    var body = new URLSearchParams();
+    body.set(GFORM_FIELDS.jan, row.jan);
+    body.set(GFORM_FIELDS.name, row.name);
+    body.set(GFORM_FIELDS.store, row.store);
+    body.set(GFORM_FIELDS.when, row.at);
+    fetch(GFORM_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString()
+    }).catch(function(){});
+  } catch(e){}
   return Promise.resolve(true);
 }
 function renderUnknown(){
@@ -261,6 +313,16 @@ function renderCard(){
     open.map(block).join("") +
     "<details style='margin-top:16px'><summary>食べない・未確認</summary>" + fold.map(block).join("") + "</details>";
 }
+function verifiedNote(p){
+  if (!p.verified) {
+    return "<p class='sub' style='color:var(--yellow);font-weight:700'>⚠ 確認日未設定。情報の鮮度が不明です。</p>";
+  }
+  var days = (Date.now() - new Date(p.verified).getTime()) / 86400000;
+  if (days > 365) {
+    return "<p class='sub' style='color:var(--yellow);font-weight:700'>⚠ 最終確認: "+p.verified+"（1年以上前）。メーカーに再確認してください。</p>";
+  }
+  return "<p class='sub'>最終確認: "+p.verified+"</p>";
+}
 function lookup(raw){
   var jan = String(raw||"").replace(/\D/g,"");
   if(!jan){ $("out").innerHTML = ""; return; }
@@ -281,7 +343,7 @@ function lookup(raw){
     };
     return;
   }
-  $("out").innerHTML = "<div class='hit "+hit.status+"'><span class='badge'>"+label[hit.status]+"</span><p><strong>"+hit.maker+"</strong><br>"+hit.name+(hit.en?"<br>"+hit.en:"")+"<br><code>"+hit.jan+"</code></p><p class='sub'>"+hit.note+"</p></div>";
+  $("out").innerHTML = "<div class='hit "+hit.status+"'><span class='badge'>"+label[hit.status]+"</span><p><strong>"+hit.maker+"</strong><br>"+hit.name+(hit.en?"<br>"+hit.en:"")+"<br><code>"+hit.jan+"</code></p><p class='sub'>"+hit.note+"</p>"+verifiedNote(hit)+"</div>";
 }
 function loadLetters(){
   try { return JSON.parse(localStorage.getItem("kyosafe-letters-v1") || "{}"); } catch(e){ return {}; }
@@ -336,6 +398,35 @@ renderMakers();
 renderCard();
 renderUnknown();
 show("scan");
+
+(function(){
+  if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone) return;
+  if (localStorage.getItem("kyosafe-a2hs-dismissed")) return;
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  var banner = $("a2hs");
+  var deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt", function(e){
+    e.preventDefault();
+    deferredPrompt = e;
+    $("a2hsText").textContent = "ホーム画面に追加すると、アプリのように使えます。";
+    $("a2hsGo").hidden = false;
+    banner.hidden = false;
+  });
+  if (isIOS) {
+    $("a2hsText").textContent = "ホーム画面に追加：共有ボタン → 「ホーム画面に追加」";
+    banner.hidden = false;
+  }
+  $("a2hsGo").onclick = function(){
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt = null;
+    banner.hidden = true;
+  };
+  $("a2hsClose").onclick = function(){
+    banner.hidden = true;
+    localStorage.setItem("kyosafe-a2hs-dismissed", "1");
+  };
+})();
 
 var camStream = null;
 var camTimer = null;
