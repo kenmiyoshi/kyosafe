@@ -373,7 +373,7 @@ function lookup(raw){
     var pre = prefixes.filter(function(x){ return jan.indexOf(x.prefix) === 0; })[0];
     var extra = pre ? "<p class='sub'>"+pre.policy+"</p>" + products.filter(function(p){ return p.makerId === pre.makerId; }).map(function(p){ return "<code>"+p.jan+"</code> "+p.name+" "+p.status; }).join("<br>") : "<p class='sub'>このメーカーは未確認です。</p>";
     var why = "<p class='sub'>食べない理由：この番号の書面がない。日本の表示は落花生・くるみ等の一部だけが義務。ごま・多くのナッツ・いか・たこ・あさりは原材料にも工場の隣のラインにも入りうる。表示なし＝安全ではない。</p>";
-    $("out").innerHTML = "<div class='hit unknown'><span class='badge'>未登録</span>"+extra+why+"<p class='sub'>パックの日本語名を入れて保存。食べない。</p><input id='unkName' type='text' placeholder='商品名（パッケージのまま）' /><label class='sub'>店</label><select id='unkStore'><option value=''>店を選ぶ</option><option>ライフ智恵光院</option><option>イオンスタイル西陣小町</option><option>フレスコプチ烏丸今出川</option><option>フレスコ堀川今出川</option><option>フレスコミニ河原町今出川</option><option>アイハート出町</option><option value='other'>その他</option></select><input id='unkStoreOther' type='text' placeholder='店名' hidden /><p><button type='button' id='unkSave'>保存</button></p><p class='sub' id='unkSend'></p></div>";
+    $("out").innerHTML = "<div class='hit unknown'><span class='badge'>未登録</span>"+extra+why+"<p class='sub'>パックの日本語名を入れて保存。食べない。</p><input id='unkName' type='text' placeholder='商品名（パッケージのまま）' /><p class='sub' id='unkAuto'></p><label class='sub'>店</label><select id='unkStore'><option value=''>店を選ぶ</option><option>ライフ智恵光院</option><option>イオンスタイル西陣小町</option><option>フレスコプチ烏丸今出川</option><option>フレスコ堀川今出川</option><option>フレスコミニ河原町今出川</option><option>アイハート出町</option><option value='other'>その他</option></select><input id='unkStoreOther' type='text' placeholder='店名' hidden /><p><button type='button' id='unkSave'>保存</button></p><p class='sub' id='unkSend'></p></div>";
     $("unkStore").onchange = function(){
       $("unkStoreOther").hidden = this.value !== "other";
     };
@@ -383,9 +383,37 @@ function lookup(raw){
         $("unkSend").textContent = "保存しました。未登録タブからコピーして共有できます。";
       });
     };
+    autoFillName(jan);
     return;
   }
   $("out").innerHTML = "<div class='hit "+hit.status+"'><span class='badge'>"+label[hit.status]+"</span><p><strong>"+hit.maker+"</strong><br>"+hit.name+(hit.en?"<br>"+hit.en:"")+"<br><code>"+hit.jan+"</code></p><p class='sub'>"+hit.note+"</p>"+verifiedNote(hit)+"</div>";
+}
+function autoFillName(jan){
+  var autoEl = $("unkAuto");
+  if (autoEl) autoEl.textContent = "商品名を検索中…";
+  fetch("https://world.openfoodfacts.org/api/v2/product/"+jan+".json")
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var nameEl = $("unkName");
+      var autoEl2 = $("unkAuto");
+      if (!nameEl || !autoEl2) return;
+      if (data && data.status === 1 && data.product) {
+        var name = data.product.product_name_ja || data.product.product_name || data.product.generic_name;
+        var brand = data.product.brands;
+        if (name) {
+          nameEl.value = name;
+          autoEl2.textContent = "自動検索: " + name + (brand ? "（" + brand + "）" : "") + " — パッケージと照らして必ず修正・確認してください。";
+        } else {
+          autoEl2.textContent = "自動検索：商品名が見つかりませんでした。手入力してください。";
+        }
+      } else {
+        autoEl2.textContent = "自動検索：データベースに見つかりませんでした。手入力してください。";
+      }
+    })
+    .catch(function(){
+      var autoEl3 = $("unkAuto");
+      if (autoEl3) autoEl3.textContent = "自動検索：通信できませんでした。手入力してください。";
+    });
 }
 function loadLetters(){
   try { return JSON.parse(localStorage.getItem("kyosafe-letters-v1") || "{}"); } catch(e){ return {}; }
