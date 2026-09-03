@@ -39,14 +39,6 @@
     <h1>KyoSafe</h1>
     <div class="sub">かき・ほたては可。落花生・ナッツ・ごま・いか・たこ・あさり・あわびは不可。</div>
   </header>
-  <form name="unknown" method="POST" data-netlify="true" hidden>
-    <input type="hidden" name="form-name" value="unknown" />
-    <input type="text" name="jan" />
-    <input type="text" name="pack_name" />
-    <input type="text" name="store" />
-    <input type="text" name="when" />
-  </form>
-
   <nav>
     <button type="button" class="on" data-p="scan">スキャン</button>
     <button type="button" data-p="card">カード</button>
@@ -216,17 +208,7 @@ function addUnknown(jan, name, store){
   all.push(row);
   localStorage.setItem("kyosafe-unknown-v1", JSON.stringify(all));
   renderUnknown();
-  var body = new URLSearchParams();
-  body.set("form-name", "unknown");
-  body.set("jan", row.jan);
-  body.set("pack_name", row.name);
-  body.set("store", row.store);
-  body.set("when", row.at);
-  return fetch("/", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: body.toString()
-  }).then(function(r){ return r.ok; }).catch(function(){ return false; });
+  return Promise.resolve(true);
 }
 function renderUnknown(){
   var all = loadUnknown();
@@ -287,15 +269,14 @@ function lookup(raw){
     var pre = prefixes.filter(function(x){ return jan.indexOf(x.prefix) === 0; })[0];
     var extra = pre ? "<p class='sub'>"+pre.policy+"</p>" + products.filter(function(p){ return p.makerId === pre.makerId; }).map(function(p){ return "<code>"+p.jan+"</code> "+p.name+" "+p.status; }).join("<br>") : "<p class='sub'>このメーカーは未確認です。</p>";
     var why = "<p class='sub'>食べない理由：この番号の書面がない。日本の表示は落花生・くるみ等の一部だけが義務。ごま・多くのナッツ・いか・たこ・あさりは原材料にも工場の隣のラインにも入りうる。表示なし＝安全ではない。</p>";
-    $("out").innerHTML = "<div class='hit unknown'><span class='badge'>未登録</span>"+extra+why+"<p class='sub'>パックの日本語名を入れて保存。食べない。</p><input id='unkName' type='text' placeholder='商品名（パッケージのまま）' /><label class='sub'>店</label><select id='unkStore'><option value=''>店を選ぶ</option><option>ライフ智恵光院</option><option>イオンスタイル西陣小町</option><option>フレスコプチ烏丸今出川</option><option>フレスコ堀川今出川</option><option>フレスコミニ河原町今出川</option><option>アイハート出町</option><option value='other'>その他</option></select><input id='unkStoreOther' type='text' placeholder='店名' hidden /><p><button type='button' id='unkSave'>保存して管理者へ</button></p><p class='sub' id='unkSend'></p></div>";
+    $("out").innerHTML = "<div class='hit unknown'><span class='badge'>未登録</span>"+extra+why+"<p class='sub'>パックの日本語名を入れて保存。食べない。</p><input id='unkName' type='text' placeholder='商品名（パッケージのまま）' /><label class='sub'>店</label><select id='unkStore'><option value=''>店を選ぶ</option><option>ライフ智恵光院</option><option>イオンスタイル西陣小町</option><option>フレスコプチ烏丸今出川</option><option>フレスコ堀川今出川</option><option>フレスコミニ河原町今出川</option><option>アイハート出町</option><option value='other'>その他</option></select><input id='unkStoreOther' type='text' placeholder='店名' hidden /><p><button type='button' id='unkSave'>保存</button></p><p class='sub' id='unkSend'></p></div>";
     $("unkStore").onchange = function(){
       $("unkStoreOther").hidden = this.value !== "other";
     };
     $("unkSave").onclick = function(){
       var store = $("unkStore").value === "other" ? $("unkStoreOther").value : $("unkStore").value;
-      $("unkSend").textContent = "送信中…";
       addUnknown(jan, $("unkName").value, store).then(function(ok){
-        $("unkSend").textContent = ok ? "送信しました" : "送信できませんでした。未登録タブからコピーしてください";
+        $("unkSend").textContent = "保存しました。未登録タブからコピーして共有できます。";
       });
     };
     return;
@@ -388,7 +369,7 @@ $("camStop").onclick = stopCam;
 $("camBtn").onclick = async function(){
   setCamErr("");
   if (!window.isSecureContext) {
-    setCamErr("Open the Netlify https link, not a downloaded file.");
+    setCamErr("Open the https link, not a downloaded file.");
     return;
   }
   if (!("BarcodeDetector" in window)) {
