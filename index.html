@@ -269,44 +269,51 @@
   </main>
 <script>
 const products = [
-  { makerId:"sato", maker:"サトウ食品", jan:"4973360564511", name:"サトウのごはん コシヒカリ 200g×3", en:"Sato Koshihikari rice 200g × 3", status:"green", note:"Contains: rice, water. Made in a dedicated facility that does not use peanut, tree nuts, sesame, or shellfish.", verified:"2026-09-01" },
-  { makerId:"sato", maker:"サトウ食品", jan:"4973360566812", name:"サトウのごはん コシヒカリ 200g×5", en:"Sato Koshihikari rice 200g × 5", status:"green", note:"Contains: rice, water. Same dedicated rice facility as the 3-pack.", verified:"2026-09-01" },
-  { makerId:"sato", maker:"サトウ食品", jan:"4973360236838", name:"サトウの切り餅 パリッとスリット 1kg", en:"Sato cut mochi 1kg", status:"green", note:"Contains: mochi rice, water. Made in a dedicated facility that does not use peanut, tree nuts, sesame, or shellfish.", verified:"2026-09-01" },
-  { makerId:"sato", maker:"サトウ食品", jan:"4973360234636", name:"サトウの切り餅 パリッとスリット 700g", en:"Sato cut mochi 700g", status:"green", note:"Contains: mochi rice, water. Same dedicated mochi facility as the 1kg bag.", verified:"2026-09-01" },
-  { makerId:"sato", maker:"サトウ食品", jan:"4973360610584", name:"サトウの麦ごはん", en:"Sato barley rice", status:"green", note:"Contains: rice, barley. Barley is not one of your allergens. Dedicated facility does not use peanut, tree nuts, sesame, or shellfish.", verified:"2026-09-01" },
-  { makerId:"yakult", maker:"ヤクルト", jan:"4903080988960", name:"Newヤクルト 5本パック", en:"New Yakult 5-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 5-pack UPC. Not a single bottle. Not a flavored variety.", verified:"2026-09-01" },
-  { makerId:"yakult", maker:"ヤクルト", jan:"4903080748960", name:"Newヤクルト 10本パック", en:"New Yakult 10-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 10-pack UPC. Not flavored. Not Y1000.", verified:"2026-09-01" },
-  { makerId:"yakult", maker:"ヤクルト", jan:"4903080508960", name:"Newヤクルト 6本パック", en:"New Yakult 6-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 6-pack UPC. Not flavored. Not Y1000.", verified:"2026-09-01" },
-  { makerId:"meiji", maker:"明治", jan:"4902705126558", name:"明治おいしい牛乳 900ml", en:"Meiji oishii milk 900ml", status:"yellow", note:"Contains: milk. Does not list peanut, tree nuts, sesame, or shellfish. Company will not give may-contain for every tree nut and shellfish. Not coffee milk or chocolate milk.", verified:"2026-09-01" },
+  { makerId:"sato", maker:"サトウ食品", jan:"4973360564511", name:"サトウのごはん コシヒカリ 200g×3", en:"Sato Koshihikari rice 200g × 3", status:"green", note:"Contains: rice, water. Made in a dedicated facility that does not use peanut, tree nuts, sesame, or shellfish.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"sato", maker:"サトウ食品", jan:"4973360566812", name:"サトウのごはん コシヒカリ 200g×5", en:"Sato Koshihikari rice 200g × 5", status:"green", note:"Contains: rice, water. Same dedicated rice facility as the 3-pack.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"sato", maker:"サトウ食品", jan:"4973360236838", name:"サトウの切り餅 パリッとスリット 1kg", en:"Sato cut mochi 1kg", status:"green", note:"Contains: mochi rice, water. Made in a dedicated facility that does not use peanut, tree nuts, sesame, or shellfish.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"sato", maker:"サトウ食品", jan:"4973360234636", name:"サトウの切り餅 パリッとスリット 700g", en:"Sato cut mochi 700g", status:"green", note:"Contains: mochi rice, water. Same dedicated mochi facility as the 1kg bag.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"sato", maker:"サトウ食品", jan:"4973360610584", name:"サトウの麦ごはん", en:"Sato barley rice", status:"green", note:"Contains: rice, barley. Barley is not one of your allergens. Dedicated facility does not use peanut, tree nuts, sesame, or shellfish.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"yakult", maker:"ヤクルト", jan:"4903080988960", name:"Newヤクルト 5本パック", en:"New Yakult 5-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 5-pack UPC. Not a single bottle. Not a flavored variety.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"yakult", maker:"ヤクルト", jan:"4903080748960", name:"Newヤクルト 10本パック", en:"New Yakult 10-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 10-pack UPC. Not flavored. Not Y1000.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"yakult", maker:"ヤクルト", jan:"4903080508960", name:"Newヤクルト 6本パック", en:"New Yakult 6-pack", status:"yellow", note:"Does not contain peanut, tree nuts, sesame, or shellfish. No full may-contain statement for the whole facility. Only this 6-pack UPC. Not flavored. Not Y1000.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"meiji", maker:"明治", jan:"4902705126558", name:"明治おいしい牛乳 900ml", en:"Meiji oishii milk 900ml", status:"yellow", note:"Contains: milk. Does not list peanut, tree nuts, sesame, or shellfish. Company will not give may-contain for every tree nut and shellfish. Not coffee milk or chocolate milk.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
   { makerId:"meiji", maker:"明治", jan:"4902705029354", name:"明治おいしい牛乳 450ml", en:"Meiji oishii milk 450ml", status:"pending", note:"2026-09-03 company reply: peanut/walnut/cashew confirmed not used, no cross-contact. No may-contain given for almond, macadamia, sesame, squid, abalone (not guaranteed absent). Hazelnut, pecan, pine nut, octopus, clam not managed by company at all — no info. Same profile as the 900ml. Awaiting family decision on whether to treat as yellow like the 900ml.", verified:"2026-09-03" },
-  { makerId:"meiji", maker:"明治", jan:"4902705011625", name:"明治ブルガリアLB81プレーン 400g", en:"Meiji Bulgaria plain 400g", status:"yellow", note:"Contains: milk. Does not list peanut, tree nuts, sesame, or shellfish. Company will not give may-contain for every tree nut and shellfish. Not a fruit cup.", verified:"2026-09-01" },
+  { makerId:"meiji", maker:"明治", jan:"4902705011625", name:"明治ブルガリアLB81プレーン 400g", en:"Meiji Bulgaria plain 400g", status:"yellow", note:"Contains: milk. Does not list peanut, tree nuts, sesame, or shellfish. Company will not give may-contain for every tree nut and shellfish. Not a fruit cup.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
   { makerId:"meiji", maker:"明治", jan:"4902705057821", name:"明治北海道バター 200g", en:"Meiji Hokkaido butter 200g", status:"pending", note:"2026-09-03 company reply: peanut/walnut/cashew confirmed not used, no cross-contact. No may-contain given for almond, macadamia, sesame, squid, abalone (not guaranteed absent). Hazelnut, pecan, pine nut, octopus, clam not managed by company at all — no info. Same profile as the 900ml milk (currently yellow). Awaiting family decision on whether to treat as yellow.", verified:"2026-09-03" },
-  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4908011500099", name:"おいしい牛乳 1000ml", en:"Megmilk oishii milk 1000ml", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this 1 liter carton.", verified:"2026-09-01" },
-  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4908011500105", name:"おいしい牛乳 750ml", en:"Megmilk oishii milk 750ml", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this 750ml carton.", verified:"2026-09-01" },
-  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4903050155989", name:"雪印北海道バター 200g", en:"Megmilk Hokkaido butter 200g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this salted butter.", verified:"2026-09-01" },
-  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4903050155996", name:"雪印北海道バター 食塩不使用 200g", en:"Megmilk unsalted butter 200g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this unsalted butter.", verified:"2026-09-01" },
-  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4903050509508", name:"6Pチーズ 102g", en:"Megmilk 6P cheese 102g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only the 102g pack.", verified:"2026-09-01" },
-  { makerId:"megmilk", maker:"雪印メグミルク", jan:"49212877", name:"ナチュレ 恵 プレーン 400g", en:"Megumi plain yogurt 400g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Not fruit yogurt.", verified:"2026-09-01" },
-  { makerId:"kagome", maker:"カゴメ", jan:"4901306010532", name:"カゴメトマトケチャップ 500g", en:"Kagome ketchup 500g", status:"yellow", note:"Does not contain peanut, sesame, or several tree nuts. Company would not answer every tree nut and shellfish. Only this bottle.", verified:"2026-09-01" },
-  { makerId:"kagome", maker:"カゴメ", jan:"4901306024232", name:"カゴメトマトジュース食塩無添加 720ml", en:"Kagome tomato juice no salt 720ml", status:"yellow", note:"Does not contain peanut, sesame, or several tree nuts. Company would not answer every tree nut and shellfish. Only this bottle.", verified:"2026-09-01" },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4908011500099", name:"おいしい牛乳 1000ml", en:"Megmilk oishii milk 1000ml", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this 1 liter carton.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4908011500105", name:"おいしい牛乳 750ml", en:"Megmilk oishii milk 750ml", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this 750ml carton.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4903050155989", name:"雪印北海道バター 200g", en:"Megmilk Hokkaido butter 200g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this salted butter.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4903050155996", name:"雪印北海道バター 食塩不使用 200g", en:"Megmilk unsalted butter 200g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only this unsalted butter.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"4903050509508", name:"6Pチーズ 102g", en:"Megmilk 6P cheese 102g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Only the 102g pack.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"megmilk", maker:"雪印メグミルク", jan:"49212877", name:"ナチュレ 恵 プレーン 400g", en:"Megumi plain yogurt 400g", status:"yellow", note:"Contains: milk. Company will not give may-contain for every tree nut and shellfish. Not fruit yogurt.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"kagome", maker:"カゴメ", jan:"4901306010532", name:"カゴメトマトケチャップ 500g", en:"Kagome ketchup 500g", status:"yellow", note:"Does not contain peanut, sesame, or several tree nuts. Company would not answer every tree nut and shellfish. Only this bottle.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"kagome", maker:"カゴメ", jan:"4901306024232", name:"カゴメトマトジュース食塩無添加 720ml", en:"Kagome tomato juice no salt 720ml", status:"yellow", note:"Does not contain peanut, sesame, or several tree nuts. Company would not answer every tree nut and shellfish. Only this bottle.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
   { makerId:"kagome", maker:"カゴメ", jan:"4901306047569", name:"野菜一日これ一本 200ml", en:"Yasai Ichinichi Kore Ippon 200ml", status:"off", note:"Do not drink. One facility that bottles this also uses almond.", verified:"2026-09-01" },
   { makerId:"kewpie", maker:"キユーピー", jan:"4901577042072", name:"キユーピーマヨネーズ 450g", en:"Kewpie mayonnaise 450g", status:"off", note:"Contains: egg. Do not eat. Same facilities also make sesame dressing. Cashew and pistachio may-contain is unknown.", verified:"2026-09-01" },
-  { makerId:"morinaga-milk", maker:"森永乳業", jan:"4902720167222", name:"森永おいしい牛乳 900ml", en:"Morinaga oishii milk 900ml", status:"yellow", note:"Contains: milk. Filling line does not run almond drinks, sesame flavor, or desserts. Those foods may still enter the same factory. Only this 900ml UPC. Not coffee milk.", verified:"2026-09-03" },
-  { makerId:"itoen", maker:"伊藤園", jan:"4901085003800", name:"お～いお茶 緑茶 PET 600ml", en:"Oi Ocha green tea 600ml", status:"yellow", note:"Contains: tea, vitamin C. Does not contain your allergens as ingredients. Made in plants that also bottle other drinks. Only this 600ml UPC.", verified:"2026-09-01" },
-  { makerId:"itoen", maker:"伊藤園", jan:"4901085181843", name:"健康ミネラルむぎ茶 600ml", en:"Itoen barley tea 600ml", status:"yellow", note:"Contains: barley tea. Does not contain your allergens as ingredients. Made in plants that also bottle other drinks. Only this 600ml UPC.", verified:"2026-09-01" },
+  { makerId:"morinaga-milk", maker:"森永乳業", jan:"4902720167222", name:"森永おいしい牛乳 900ml", en:"Morinaga oishii milk 900ml", status:"yellow", note:"Contains: milk. Filling line does not run almond drinks, sesame flavor, or desserts. Those foods may still enter the same factory. Only this 900ml UPC. Not coffee milk.", verified:"2026-09-03", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"itoen", maker:"伊藤園", jan:"4901085003800", name:"お～いお茶 緑茶 PET 600ml", en:"Oi Ocha green tea 600ml", status:"yellow", note:"Contains: tea, vitamin C. Does not contain your allergens as ingredients. Made in plants that also bottle other drinks. Only this 600ml UPC.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"itoen", maker:"伊藤園", jan:"4901085181843", name:"健康ミネラルむぎ茶 600ml", en:"Itoen barley tea 600ml", status:"yellow", note:"Contains: barley tea. Does not contain your allergens as ingredients. Made in plants that also bottle other drinks. Only this 600ml UPC.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
   { makerId:"itoen", maker:"伊藤園", jan:"4901085192009", name:"お～いお茶 緑茶 525ml", en:"Oi Ocha 525ml", status:"off", note:"Do not buy. This size is discontinued.", verified:"2026-09-01" },
   { makerId:"itoen", maker:"伊藤園", jan:"4901085181850", name:"むぎ茶 誤JAN", en:"Barley tea wrong UPC", status:"off", note:"Do not buy. Wrong UPC. Use 4901085181843.", verified:"2026-09-01" },
-  { makerId:"kikkoman", maker:"キッコーマン", jan:"4901515115172", name:"キッコーマン特選丸大豆しょうゆ 1L", en:"Kikkoman tokusen marudaizu soy sauce 1L", status:"yellow", note:"Contains: soy, wheat. Wheat is not one of your allergens. This line does not make sesame sauce or seafood soup. No full may-contain statement for the whole facility. Only this 1 liter bottle. Not ponzu or noodle soup.", verified:"2026-09-01" },
+  { makerId:"kikkoman", maker:"キッコーマン", jan:"4901515115172", name:"キッコーマン特選丸大豆しょうゆ 1L", en:"Kikkoman tokusen marudaizu soy sauce 1L", status:"yellow", note:"Contains: soy, wheat. Wheat is not one of your allergens. This line does not make sesame sauce or seafood soup. No full may-contain statement for the whole facility. Only this 1 liter bottle. Not ponzu or noodle soup.", verified:"2026-09-01", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
 
-  { makerId:"kikkoman", maker:"キッコーマン", jan:"4901515120404", name:"キッコーマン特選丸大豆しょうゆ 500ml", en:"Kikkoman tokusen marudaizu soy sauce 500ml", status:"yellow", note:"Contains: soy, wheat. Wheat is not one of your allergens. This line does not make sesame sauce or seafood soup. No full may-contain statement for the whole facility. Only this 500ml bottle. Not ponzu or noodle soup.", verified:"2026-09-03" },
-  { makerId:"suntory", maker:"サントリー", jan:"4901777216891", name:"サントリー天然水 550ml", en:"Suntory Tennensui 550ml", status:"green", note:"Contains: water. Unflavored bottled water only. Not flavored water or sparkling fruit water.", verified:"2026-09-02" },
-  { makerId:"suntory", maker:"サントリー", jan:"4901777216884", name:"サントリー天然水 550ml（別JAN）", en:"Suntory Tennensui 550ml (alt UPC)", status:"green", note:"Contains: water. Unflavored bottled water only.", verified:"2026-09-02" },
+  { makerId:"kikkoman", maker:"キッコーマン", jan:"4901515120404", name:"キッコーマン特選丸大豆しょうゆ 500ml", en:"Kikkoman tokusen marudaizu soy sauce 500ml", status:"yellow", note:"Contains: soy, wheat. Wheat is not one of your allergens. This line does not make sesame sauce or seafood soup. No full may-contain statement for the whole facility. Only this 500ml bottle. Not ponzu or noodle soup.", verified:"2026-09-03", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"suntory", maker:"サントリー", jan:"4901777216891", name:"サントリー天然水 550ml", en:"Suntory Tennensui 550ml", status:"green", note:"Contains: water. Unflavored bottled water only. Not flavored water or sparkling fruit water.", verified:"2026-09-02", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"suntory", maker:"サントリー", jan:"4901777216884", name:"サントリー天然水 550ml（別JAN）", en:"Suntory Tennensui 550ml (alt UPC)", status:"green", note:"Contains: water. Unflavored bottled water only.", verified:"2026-09-02", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
   { makerId:"nisshin-oillio", maker:"日清オイリオ", jan:"4902380135845", name:"日清キャノーラ油 1000g", en:"Nisshin canola oil 1000g", status:"pending", note:"Do not use yet. Canola oil is a staple we asked about. No company answer on file.", verified:"" },
   { makerId:"mizkan", maker:"ミツカン", jan:"4902106271208", name:"ミツカン穀物酢 500ml", en:"Mizkan grain vinegar 500ml", status:"pending", note:"Do not use yet. Plain grain vinegar is a staple we asked about. No company answer on file.", verified:"" },
   { makerId:"nichirei", maker:"ニチレイ", jan:"4902130382024", name:"ニチレイブロッコリー 250g", en:"Nichirei broccoli 250g", status:"pending", note:"Do not use yet. Plain frozen broccoli is a staple we asked about. No company answer on file.", verified:"" },
   { makerId:"hagoromo", maker:"はごろもフーズ", jan:"4902560070072", name:"はごろもミートソース 290g", en:"Hagoromo meat sauce 290g", status:"off", note:"Do not eat. Same filler as other sauces. Clam is brought into that factory.", verified:"2026-09-03" },
-  { makerId:"hagoromo", maker:"はごろもフーズ", jan:"4902560310147", name:"ポポロスパ7分 結束 700g", en:"Hagoromo Poporo spaghetti 7-min 700g", status:"yellow", note:"Contains: durum wheat. Wheat is not one of your allergens. They said this pasta line does not run sesame or seafood sauce and clam is not brought into that plant. Only this 700g pack. Not sauce.", verified:"2026-09-03" },
-  { makerId:"hagoromo", maker:"はごろもフーズ", jan:"4902560226066", name:"シャキッとコーン 190g", en:"Hagoromo crisp corn 190g", status:"off", note:"Do not eat. Clam is brought into that factory.", verified:"2026-09-03" }
+  { makerId:"hagoromo", maker:"はごろもフーズ", jan:"4902560310147", name:"ポポロスパ7分 結束 700g", en:"Hagoromo Poporo spaghetti 7-min 700g", status:"yellow", note:"Contains: durum wheat. Wheat is not one of your allergens. They said this pasta line does not run sesame or seafood sauce and clam is not brought into that plant. Only this 700g pack. Not sauce.", verified:"2026-09-03", where:[{name:"一般的なスーパー全般（ライフ・イオン・フレスコ・アイハート等）"}] },
+  { makerId:"hagoromo", maker:"はごろもフーズ", jan:"4902560226066", name:"シャキッとコーン 190g", en:"Hagoromo crisp corn 190g", status:"off", note:"Do not eat. Clam is brought into that factory.", verified:"2026-09-03" },
+  { makerId:"sb-foods", maker:"エスビー食品", jan:"4901002151720", name:"カレーの王子さま レトルト（アレルギー特定原材料等28品目不使用）70g 野菜とひよこ豆", en:"Curry no Ojisama retort pouch, allergen-free (28 items), 70g, vegetable & chickpea", status:"green", note:"公式サイトで確認済み。28品目（落花生・くるみ・カシューナッツ・アーモンド・マカダミア・ごま・いか・あわび含む全て）不使用。FSSC22000認証工場、専用洗浄・検査体制。パッケージに必ず「アレルギー特定原材料等28品目不使用」の表記があることを確認すること。", verified:"2026-09-04",
+    where:[{name:"ライフ智恵光院（要確認）",url:"https://www.google.com/maps/search/?api=1&query=ライフ智恵光院+京都"},{name:"イオンスタイル西陣小町（要確認）",url:"https://www.google.com/maps/search/?api=1&query=イオンスタイル西陣小町+京都"},{name:"通販：S&Bお届けサイト",url:"https://www.sbotodoke.com/shop/g/g15172/"}] },
+  { makerId:"sb-foods", maker:"エスビー食品", jan:"4901002032852", name:"カレーの王子さま レトルト（通常版）70g 豚肉", en:"Curry no Ojisama retort pouch, REGULAR version (NOT allergen-free), 70g, pork", status:"off", note:"⚠ 似た名前・似たパッケージだが、こちらはアレルギー対応版ではない（28品目不使用の表記なし）。豚肉入り、他のアレルゲンも不使用の保証なし。JANを必ず確認し、4901002151720（アレルギー対応版）とは別物なので絶対に間違えないこと。", verified:"2026-09-04" },
+  { makerId:"elfin", maker:"エルフィン・インターナショナル", jan:"", name:"エルフィンのポテトコロッケ（冷凍）", en:"Elfin potato croquette (frozen)", status:"green", note:"原材料確認済み：じゃがいも、米粉パン粉（米粉・砂糖・イースト・なたね油・食塩）、米粉、なたね油、砂糖、食塩。揚げ油もなたね油。アレルギー表示対象28品目【該当なし】。通販のみ（rabbit-foods.shop-pro.jp等）、バーコードなし。名前で検索して確認する。", verified:"2026-09-04",
+    where:[{name:"通販：らびっと",url:"https://rabbit-foods.shop-pro.jp/"},{name:"通販：エルフィン公式",url:"https://elfin-komepan.shop-pro.jp/"}] },
+  { makerId:"farmers-factory", maker:"ファーマーズファクトリー", jan:"", name:"北海道放牧豚ウインナー（ポーク／ハーブ／粗挽き）", en:"Hokkaido pasture-raised pork sausage (plain/herb/coarse-ground)", status:"green", note:"原材料確認済み：豚肉、豚脂、食塩、砂糖（和三盆糖）、香辛料のみ。アレルギー表示対象28品目【豚肉】使用（他は該当なし）。通販のみ、バーコードなし。同ブランドの「ベーコンスライス」は卵・乳を含む別商品なので混同しないこと。", verified:"2026-09-04",
+    where:[{name:"通販：ファーマーズファクトリー公式",url:"https://farmers-factory.com/"},{name:"通販：らびっと",url:"https://rabbit-foods.shop-pro.jp/"}] }
 ];
 
 const prefixes = [
@@ -327,6 +334,7 @@ const prefixes = [
   { prefix:"4902380", makerId:"nisshin-oillio", policy:"日清オイリオ。未確認。戻す。" },
   { prefix:"4902106", makerId:"mizkan", policy:"ミツカン。未確認。戻す。" },
   { prefix:"4902130", makerId:"nichirei", policy:"ニチレイ。未確認。戻す。" },
+  { prefix:"4901002", makerId:"sb-foods", policy:"エスビー食品。パッケージに「アレルギー特定原材料等28品目不使用」と明記された商品だけ（カレーの王子さま等）。似た名前の通常版が多数あるので必ずJANとパッケージ表記を確認。スパイス・カレールウ等の通常商品はナッツ等を扱う工場の可能性が高いため全て戻す。" },
 ];
 const makers = [
   { id:"sato", name:"サトウ食品", status:"green", blurb:"Rice and mochi you can buy." },
@@ -345,7 +353,10 @@ const makers = [
   { id:"nichirei", name:"ニチレイ", status:"pending", blurb:"Broccoli not cleared." },
   { id:"glico", name:"グリコ", status:"off", blurb:"Do not use." },
   { id:"suntory", name:"サントリー", status:"green", blurb:"Unflavored water only." },
-  { id:"hagoromo", name:"はごろもフーズ", status:"yellow", blurb:"ポポロスパ700g only." }
+  { id:"hagoromo", name:"はごろもフーズ", status:"yellow", blurb:"ポポロスパ700g only." },
+  { id:"sb-foods", name:"エスビー食品", status:"yellow", blurb:"「アレルギー特定原材料等28品目不使用」と明記された商品だけ。他は戻す。" },
+  { id:"elfin", name:"エルフィン・インターナショナル", status:"yellow", blurb:"米粉専門・アレルギー対応工場。個別に確認した商品だけ。通販のみ、バーコードなし。" },
+  { id:"farmers-factory", name:"ファーマーズファクトリー", status:"yellow", blurb:"北海道放牧豚のウインナー。個別に確認した商品だけ。通販のみ、バーコードなし。同ブランドのベーコンは卵・乳含むため別。" }
 ];
 const label = {
   green: "買える",
@@ -473,7 +484,7 @@ function renderCard(){
     var rows = products.filter(function(p){ return p.status === st && matches(p); });
     if (!rows.length) return "";
     return "<h2 style='font-size:1rem'>"+titles[st]+"</h2>" + rows.map(function(p){
-      return "<div class='hit "+p.status+"'><span class='badge'>"+label[p.status]+"</span><div><strong>"+p.maker+"</strong><br>"+p.name+(p.en?"<br><span class='sub'>"+p.en+"</span>":"")+"<br><code>"+p.jan+"</code><p class='sub'>"+p.note+"</p>"+verifiedNote(p)+"</div></div>";
+      return "<div class='hit "+p.status+"'><span class='badge'>"+label[p.status]+"</span><div><strong>"+p.maker+"</strong><br>"+p.name+(p.en?"<br><span class='sub'>"+p.en+"</span>":"")+"<br><code>"+(p.jan || "バーコードなし（通販のみ）")+"</code><p class='sub'>"+p.note+"</p>"+whereNote(p)+verifiedNote(p)+"</div></div>";
     }).join("");
   }
   var open = ["green","yellow"];
@@ -485,6 +496,13 @@ function renderCard(){
     openHtml +
     (foldHtml ? "<details style='margin-top:16px'" + (q ? " open" : "") + "><summary>食べない・未確認</summary>" + foldHtml + "</details>" : "") +
     (noResults ? "<p class='sub'>該当する商品がありません。</p>" : "");
+}
+function whereNote(p){
+  if (!p.where || !p.where.length) return "";
+  var links = p.where.map(function(w){
+    return w.url ? "<a href='"+w.url+"' target='_blank' rel='noopener'>"+w.name+"</a>" : w.name;
+  }).join("、");
+  return "<p class='sub'>🛒 入手先: "+links+"</p>";
 }
 function verifiedNote(p){
   if (!p.verified) {
@@ -516,7 +534,7 @@ function lookup(raw){
     };
     return;
   }
-  $("out").innerHTML = "<div class='hit "+hit.status+"'><span class='badge'>"+label[hit.status]+"</span><p><strong>"+hit.maker+"</strong><br>"+hit.name+(hit.en?"<br>"+hit.en:"")+"<br><code>"+hit.jan+"</code></p><p class='sub'>"+hit.note+"</p>"+verifiedNote(hit)+"</div>";
+  $("out").innerHTML = "<div class='hit "+hit.status+"'><span class='badge'>"+label[hit.status]+"</span><p><strong>"+hit.maker+"</strong><br>"+hit.name+(hit.en?"<br>"+hit.en:"")+"<br><code>"+hit.jan+"</code></p><p class='sub'>"+hit.note+"</p>"+whereNote(hit)+verifiedNote(hit)+"</div>";
 }
 function loadLetters(){
   try { return JSON.parse(localStorage.getItem("kyosafe-letters-v1") || "{}"); } catch(e){ return {}; }
