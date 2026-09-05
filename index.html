@@ -61,28 +61,59 @@
   <main>
     <section id="emergency" hidden>
       <div class="hit off" style="font-size:1.4rem;line-height:1.6;text-align:center;padding:24px">
-        <strong>⚠️ 食物アレルギーがあります</strong><br>
-        <span style="font-size:1.1rem">I have severe food allergies.</span>
+        <strong>⚠️ 食物アレルギー ／ FOOD ALLERGY</strong>
       </div>
+
       <div class="card">
-        <p style="font-size:1.3rem;font-weight:700;color:var(--red)">
-          えび・かに・かき・ほたて以外の貝・軟体動物（いか・たこ・あさり・あわび・つぶ貝・ムール貝・うに等）、落花生・ナッツ・ごまは食べられません
+        <p style="font-size:0.85rem;font-weight:700;letter-spacing:0.05em;color:var(--muted)">日本語 JAPANESE</p>
+        <p style="font-size:1.15rem;font-weight:700">
+          重度のアレルギーがあり、次の食材が含まれる食品を食べると、少量であっても医療的な処置が必要となります。
         </p>
-        <p class="sub">(Any shellfish/mollusk other than shrimp, crab, oyster, scallop — including squid, octopus, clams, abalone, and other mollusks — plus peanut, tree nuts, and sesame: cannot eat)</p>
+        <ul style="font-size:1.15rem;font-weight:700;color:var(--red);margin:12px 0;padding-left:1.3em">
+          <li>ごま</li>
+          <li>ゴマ油</li>
+          <li>木の実類</li>
+          <li>ナッツオイル</li>
+          <li>軟体動物</li>
+          <li>タコ</li>
+          <li>イカ</li>
+          <li>コウイカ類</li>
+          <li>ピーナッツ</li>
+        </ul>
         <p style="font-size:1.15rem;font-weight:700;color:var(--green)">
-          えび・かに・かき・ほたては大丈夫です
+          例外：えび・かに・かき・ほたては大丈夫です
         </p>
-        <p class="sub">(Shrimp, crab, oyster, and scallop are OK)</p>
+        <p style="font-size:1.15rem;font-weight:700;color:var(--red)">この食事には、アレルギーの原因となる食材が含まれていますか？</p>
+        <p style="font-size:1.1rem">警告！私の食事を用意する際には、清潔な手袋、器具、調理台、調理器具、また揚げ油などがこの食品に接触していないものを使用してください。よろしくお願いします！</p>
       </div>
+
       <div class="card">
-        <strong>スタッフへ見せる文章</strong>
-        <p style="font-size:1.15rem">上記のアレルギーがあります。この中に一つでも入っていたら食べられません。少量でも危険です。教えていただけますか。</p>
-        <p class="sub">(I have the allergies above. If a dish contains even a small amount of any of them, I cannot eat it. Could you please check?)</p>
+        <p style="font-size:0.85rem;font-weight:700;letter-spacing:0.05em;color:var(--muted)">ENGLISH</p>
+        <p style="font-size:1.15rem;font-weight:700">
+          I have severe food allergies and will have an allergic reaction requiring medical attention if I eat any food that includes the following ingredients, even in small amounts:
+        </p>
+        <ul style="font-size:1.15rem;font-weight:700;color:var(--red);margin:12px 0;padding-left:1.3em">
+          <li>Sesame</li>
+          <li>Sesame oil</li>
+          <li>Tree nuts</li>
+          <li>Nut oils</li>
+          <li>Mollusks</li>
+          <li>Octopus</li>
+          <li>Squid</li>
+          <li>Cuttlefish</li>
+          <li>Peanut</li>
+        </ul>
+        <p style="font-size:1.15rem;font-weight:700;color:var(--green)">
+          Exception: shrimp, crab, oyster, and scallop are OK — these are not mollusks and are safe to eat.
+        </p>
+        <p style="font-size:1.15rem;font-weight:700;color:var(--red)">Does this food contain my allergens?</p>
+        <p style="font-size:1.1rem">Caution! Please use clean gloves, utensils, surfaces, cookware, and frying oil when preparing my meal. Thank you!</p>
       </div>
+
       <div class="card">
         <strong>緊急時</strong>
         <p style="font-size:1.15rem">119 → 救急車（アレルギー反応・アナフィラキシー）</p>
-        <p class="sub">Call 119 for an ambulance if a reaction happens.</p>
+        <p class="sub"><em>Call 119 for an ambulance if a reaction happens.</em></p>
       </div>
     </section>
     <section id="scan">
@@ -153,8 +184,10 @@
           <tbody>
             <tr style="border-left:4px solid var(--yellow);border-bottom:1px solid var(--border,#eee)">
               <td style="padding:8px 6px;white-space:nowrap"><a href="https://www.lawson.co.jp/recommend/allergy/" target="_blank" rel="noopener">ローソン（コンビニ）</a><br><span class="sub"><em>Lawson (convenience store)</em></span></td>
-              <td style="padding:8px 6px">公式サイトは視覚的な■マークの表のみでこちらのツールでは読み取れず、代わりに実際のラベル表記を書き起こしている第三者サイト「表示ラベルDb」経由で個別に確認。揚げ物（からあげクン等）は未確認 — 確認するには商品ページのスクリーンショットが必要（他のコンビニと同じ方法）。<br><span class="sub"><em>The official site only shows a visual grid I can't read reliably — verified instead via a third-party label-transcription site item by item. Fried snacks (Karaage-kun etc.) not yet checked — would need a screenshot of the product page, same method as other chains.</em></span></td>
+              <td style="padding:8px 6px">公式サイトの■マーク表はスクリーンショットで確認可能（画像なら塗り潰しが判読できる）。テキスト取得では読めないため、確認する商品はスクリーンショットで送ること。<br><span class="sub"><em>The official site's shaded-cell grid is readable from a screenshot (the fill pattern comes through in an image, just not in text extraction). For any item you want checked, send a screenshot of the page.</em></span></td>
               <td style="padding:8px 6px"><ul style="margin:0;padding-left:1.1em">
+                <li>プレミアムおにぎり 焼さけハラミ<br><span class="sub"><em>Premium onigiri, grilled salmon belly — only salmon shaded</em></span></li>
+                <li>味わいの食パン 6枚入<br><span class="sub"><em>Ajiwai sliced bread, 6-slice — only wheat, dairy, soy shaded</em></span></li>
                 <li>手巻おにぎり シーチキンマヨネーズ<br><span class="sub"><em>Hand-rolled onigiri, tuna mayo</em></span></li>
                 <li>たまごサンド<br><span class="sub"><em>Egg salad sandwich</em></span></li>
                 <li>スパイスとビーフの旨みカレーパン<br><span class="sub"><em>Spice & beef curry bread</em></span></li>
