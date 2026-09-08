@@ -446,6 +446,7 @@ const products = [
   { makerId:"sb-foods", maker:"エスビー食品", jan:"4901002151720", name:"カレーの王子さま レトルト（アレルギー特定原材料等28品目不使用）70g 野菜とひよこ豆", en:"Curry no Ojisama retort pouch, allergen-free (28 items), 70g, vegetable & chickpea", status:"green", note:"公式サイトで確認済み。28品目（落花生・くるみ・カシューナッツ・アーモンド・マカダミア・ごま・いか・あわび含む全て）不使用。FSSC22000認証工場、専用洗浄・検査体制。パッケージに必ず「アレルギー特定原材料等28品目不使用」の表記があることを確認すること。", verified:"2026-09-04",
     where:[{name:"ライフ智恵光院（要確認）",url:"https://www.google.com/maps/search/?api=1&query=ライフ智恵光院+京都"},{name:"イオンスタイル西陣小町（要確認）",url:"https://www.google.com/maps/search/?api=1&query=イオンスタイル西陣小町+京都"},{name:"通販：S&Bお届けサイト",url:"https://www.sbotodoke.com/shop/g/g15172/"}] },
   { makerId:"sb-foods", maker:"エスビー食品", jan:"4901002032852", name:"カレーの王子さま レトルト（通常版）70g 豚肉", en:"Curry no Ojisama retort pouch, REGULAR version (NOT allergen-free), 70g, pork", status:"off", note:"⚠ 似た名前・似たパッケージだが、こちらはアレルギー対応版ではない（28品目不使用の表記なし）。豚肉入り、他のアレルゲンも不使用の保証なし。JANを必ず確認し、4901002151720（アレルギー対応版）とは別物なので絶対に間違えないこと。", verified:"2026-09-04" },
+  { makerId:"seven-eleven", maker:"セブン‐イレブン（セブンプレミアム）", jan:"", name:"7プレミアム 潤もち食パン 6枚入", en:"Seven Premium Uruo-mochi bread, 6-slice", status:"green", note:"2026-09付会社回答：アーモンド・カシューナッツ・マカダミアナッツ・ごま・いか・あわびは原材料として不使用（確認済み）。さらに製造ラインでもクルミ・アーモンドの取り扱いなしと明言（この2つは同ラインのくるみパン・アーモンドブールとの混入懸念を直接解消）。カシューナッツ・マカダミア・ごま・いか・あわびはライン単位の混入確認までは回答なし（ただし近畿の7-Eleven商品にこれらを含む同種パンは確認されていない）。ライン構成は予告なく変わる場合がある。バーコードなし、製造元は武蔵野フーズ。", verified:"2026-09-04", where:[{name:"セブン-イレブン（近畿・北海道・東北・関東・甲信越・北陸・東海・中国・四国・九州で販売）"}] },
   { makerId:"elfin", maker:"エルフィン・インターナショナル", jan:"", name:"エルフィンのポテトコロッケ（冷凍）", en:"Elfin potato croquette (frozen)", status:"green", note:"原材料確認済み：じゃがいも、米粉パン粉（米粉・砂糖・イースト・なたね油・食塩）、米粉、なたね油、砂糖、食塩。揚げ油もなたね油。アレルギー表示対象28品目【該当なし】。通販のみ（rabbit-foods.shop-pro.jp等）、バーコードなし。名前で検索して確認する。", verified:"2026-09-04",
     where:[{name:"通販：らびっと",url:"https://rabbit-foods.shop-pro.jp/"},{name:"通販：エルフィン公式",url:"https://elfin-komepan.shop-pro.jp/"}] },
   { makerId:"farmers-factory", maker:"ファーマーズファクトリー", jan:"", name:"北海道放牧豚ウインナー（ポーク／ハーブ／粗挽き）", en:"Hokkaido pasture-raised pork sausage (plain/herb/coarse-ground)", status:"green", note:"原材料確認済み：豚肉、豚脂、食塩、砂糖（和三盆糖）、香辛料のみ。アレルギー表示対象28品目【豚肉】使用（他は該当なし）。通販のみ、バーコードなし。同ブランドの「ベーコンスライス」は卵・乳を含む別商品なので混同しないこと。", verified:"2026-09-04",
@@ -494,7 +495,8 @@ const makers = [
   { id:"elfin", name:"エルフィン・インターナショナル", status:"yellow", blurb:"米粉専門・アレルギー対応工場。個別に確認した商品だけ。通販のみ、バーコードなし。" },
   { id:"farmers-factory", name:"ファーマーズファクトリー", status:"yellow", blurb:"北海道放牧豚のウインナー。個別に確認した商品だけ。通販のみ、バーコードなし。同ブランドのベーコンは卵・乳含むため別。" },
   { id:"topvalu", name:"トップバリュ", status:"yellow", blurb:"やさしごはんディズニーパン2種は完全クリア。他のトップバリュ商品は個別確認が必要。" },
-  { id:"nisshin-flour", name:"日清製粉ウェルナ", status:"yellow", blurb:"フラワー・カメリヤ1kgは対象アレルゲン不使用。ただし小麦の原料由来コンタミは情報なし。日清オイリオとは別会社。" }
+  { id:"nisshin-flour", name:"日清製粉ウェルナ", status:"yellow", blurb:"フラワー・カメリヤ1kgは対象アレルゲン不使用。ただし小麦の原料由来コンタミは情報なし。日清オイリオとは別会社。" },
+  { id:"seven-eleven", name:"セブン‐イレブン（セブンプレミアム）", status:"yellow", blurb:"個別に確認した商品だけ。潤もち食パンは会社回答で確認済み。他のセブンプレミアム商品は個別確認が必要。" }
 ];
 const label = {
   green: "買える",
